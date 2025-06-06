@@ -1,20 +1,79 @@
----
-name: Feature request
-about: Suggest an idea for this project
-title: ''
-labels: ''
-assignees: ''
+name: '✨ BE: 이슈 생성'
+description: 백엔드 관련 이슈를 등록합니다.
+title: '✨ Feat: '
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ---
+        ### 📝 Commit 타입
+        - ✨ **Feat**: 새로운 기능 추가
+        - 🐛 **Fix**: 버그 수정
+        - 📦 **Chore**: 빌드 관련 파일 수정 및 패키지 매니저 수정
+        - ♻️ **Refactor**: 코드 리팩토링
+        - 📝 **Docs**: 문서 수정
+        - 🧪 **Test**: 테스트 코드 추가, 리팩토링
+        - 🚨 **Hotfix**: 긴급 버그 수정
+        - ⚙️ **Ci**: CI/CD 관련 설정 변경
+        - ⚡️ **Perf**: 성능 개선
+        ---
 
----
+  - type: textarea
+    id: summary
+    attributes:
+      label: '✨ 작업 개요'
+      description: '이번 작업에 대한 간결한 설명을 작성해주세요.'
+    validations:
+      required: true
 
-**Is your feature request related to a problem? Please describe.**
-A clear and concise description of what the problem is. Ex. I'm always frustrated when [...]
+  - type: textarea
+    id: details
+    attributes:
+      label: '⚙️ 상세 작업 내용'
+      description: '상세한 작업 내용을 작성해주세요. (체크리스트 형식 권장)'
+      value: |
+        - [ ]
+        - [ ]
+        - [ ]
+    validations:
+      required: true
 
-**Describe the solution you'd like**
-A clear and concise description of what you want to happen.
+  - type: textarea
+    id: api-endpoints
+    attributes:
+      label: '🌐 API Endpoints (선택 사항)'
+      description: '관련된 API 엔드포인트와 HTTP 메소드를 명시해주세요. (예: `POST /api/users`)'
 
-**Describe alternatives you've considered**
-A clear and concise description of any alternative solutions or features you've considered.
+  - type: textarea
+    id: database
+    attributes:
+      label: '🗄️ 데이터베이스 변경 사항 (선택 사항)'
+      description: '테이블, 컬럼 등 데이터베이스 스키마 변경이 필요한 경우 작성해주세요.'
 
-**Additional context**
-Add any other context or screenshots about the feature request here.
+  - type: textarea
+    id: testing-plan
+    attributes:
+      label: '🧪 테스트 계획 (선택 사항)'
+      description: '작업한 내용에 대한 테스트 계획을 작성해주세요. (단위 테스트, 통합 테스트 등)'
+      value: |
+        - [ ] 단위(Unit) 테스트
+        - [ ] 통합(Integration) 테스트
+        - [ ] E2E(End-to-End) 테스트
+
+  - type: dropdown
+    id: estimated-time
+    attributes:
+      label: '⏳ 예상 소요 시간'
+      multiple: false
+      options:
+        - 1시간 이내
+        - 3시간 이내
+        - 5시간 이내
+        - 하루
+        - 2일 이상
+
+  - type: textarea
+    id: notes
+    attributes:
+      label: '💬 기타 참고 사항'
+      description: '스크린샷, 참고 링크 등 추가적으로 공유할 내용이 있다면 작성해주세요.'
