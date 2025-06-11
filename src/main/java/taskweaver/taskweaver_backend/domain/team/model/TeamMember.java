@@ -22,6 +22,7 @@ public class TeamMember extends BaseEntity {
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
-    @Column(length = 50)
-    private String role;
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private TeamRole role;
 }
