@@ -16,10 +16,28 @@ public class MemberRefreshToken extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
-    @Column(nullable = false, length = 500)
-    private String token;
+    private String refreshToken;
+
+    private int reissueCount = 0;
+
+    public MemberRefreshToken(Member member, String refreshToken) {
+        this.member = member;
+        this.refreshToken = refreshToken;
+    }
+
+    public void updateRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
+    }
+
+    public boolean validateRefreshToken(String refreshToken) {
+        return this.refreshToken.equals(refreshToken);
+    }
+
+    public void increaseReissueCount() {
+        reissueCount++;
+    }
 }

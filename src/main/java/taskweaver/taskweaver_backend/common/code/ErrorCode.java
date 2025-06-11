@@ -130,7 +130,9 @@ public enum ErrorCode {
     NOT_COMMENT_WRITER(403, "C003", "Only comment writer can edit this comment."),
 
     EMAIL_ERROR(404, "E001", "An error occurred while sending the email."),
-
+    // 카카오 OAuth 파싱 에러 추가
+    KAKAO_TOKEN_PARSE_FAILED(400, "K001", "Failed to parse Kakao access token response"),
+    KAKAO_PROFILE_PARSE_FAILED(400, "K002", "Failed to parse Kakao profile response");
     ;
 
     /**
