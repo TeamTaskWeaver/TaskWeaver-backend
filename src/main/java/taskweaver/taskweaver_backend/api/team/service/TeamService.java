@@ -23,7 +23,6 @@ public class TeamService {
     private final TeamMemberManager teamMemberManager;
     private final MemberRepository memberRepository;
 
-
     @Transactional
     public TeamResponse.teamCreateResponse createTeam(TeamRequest.teamCreateRequest request, Long userId) {
 
@@ -33,14 +32,7 @@ public class TeamService {
         Team team = TeamConverter.toCreateRequest(request, leader);
 
         team = teamRepository.save(team);
-        teamMemberManager.addLeaderToTeam(team, userId);
+        teamMemberManager.addLeaderToTeam(team, leader);
         return TeamConverter.toCreateResponse(team);
     }
-
-
-    private String generateInviteLink() {
-        return "https://example.com/invite/" + UUID.randomUUID().toString();
-    }
-
-
 }

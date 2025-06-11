@@ -18,19 +18,14 @@ import taskweaver.taskweaver_backend.domain.team.repository.TeamMemberRepository
 public class TeamMemberManager {
 
     private final TeamMemberRepository teamMemberRepository;
-    private final MemberRepository memberRepository;
 
-    public void addLeaderToTeam(Team team, Long memberId) {
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new BusinessExceptionHandler(ErrorCode.TEAM_MEMBER_NOT_FOUND));
-        TeamMember teamMember = TeamMember.builder()
+    public void addLeaderToTeam(Team team, Member leader) {
+        TeamMember tm = TeamMember.builder()
                 .team(team)
-                .member(member)
+                .member(leader)
                 .role(TeamRole.LEADER)
                 .build();
-        teamMemberRepository.save(teamMember);
+        teamMemberRepository.save(tm);
     }
-
-
 }
 

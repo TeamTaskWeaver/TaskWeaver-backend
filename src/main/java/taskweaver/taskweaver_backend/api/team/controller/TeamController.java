@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import taskweaver.taskweaver_backend.api.team.controller.request.TeamRequest;
 import taskweaver.taskweaver_backend.api.team.service.TeamService;
+import taskweaver.taskweaver_backend.api.team.service.response.TeamResponse;
 import taskweaver.taskweaver_backend.common.code.ApiResponse;
 import taskweaver.taskweaver_backend.common.code.SuccessCode;
 
@@ -27,7 +28,7 @@ public class TeamController {
 
     @Operation(summary = "팀 생성")
     @PostMapping("/team")
-    public ResponseEntity<ApiResponse> createTeam(@RequestBody TeamRequest.teamCreateRequest request, @AuthenticationPrincipal User user) {
+    public ResponseEntity<ApiResponse<TeamResponse.teamCreateResponse>> createTeam(@RequestBody TeamRequest.teamCreateRequest request, @AuthenticationPrincipal User user) {
         try {
             ApiResponse apiResponse = ApiResponse.builder()
                     .result(teamService.createTeam(request, Long.parseLong(user.getUsername())))
