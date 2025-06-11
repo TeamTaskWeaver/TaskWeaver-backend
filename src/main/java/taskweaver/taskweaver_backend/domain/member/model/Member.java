@@ -27,7 +27,7 @@ public class Member extends BaseEntity {
     private String nickname;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(name = "login_type", nullable = false, length = 20)
     private LoginType loginType;
 
 }
