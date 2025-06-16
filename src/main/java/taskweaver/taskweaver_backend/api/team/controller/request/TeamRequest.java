@@ -8,7 +8,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public class TeamRequest {
     @Getter
-    public static class teamCreateRequest {
+    public static class TeamCreateRequest {
         @Schema(description = "팀 이름", example = "Team Name")
         String name;
 

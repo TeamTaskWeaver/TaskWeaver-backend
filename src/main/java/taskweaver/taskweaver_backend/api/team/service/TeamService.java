@@ -13,8 +13,6 @@ import taskweaver.taskweaver_backend.domain.member.repository.MemberRepository;
 import taskweaver.taskweaver_backend.domain.team.model.Team;
 import taskweaver.taskweaver_backend.domain.team.repository.TeamRepository;
 
-import java.util.UUID;
-
 @RequiredArgsConstructor
 @Service
 @Transactional(readOnly = true)
@@ -24,7 +22,7 @@ public class TeamService {
     private final MemberRepository memberRepository;
 
     @Transactional
-    public TeamResponse.teamCreateResponse createTeam(TeamRequest.teamCreateRequest request, Long userId) {
+    public TeamResponse.TeamCreateResponse createTeam(TeamRequest.TeamCreateRequest request, Long userId) {
 
         Member leader = memberRepository.findById(userId)
                 .orElseThrow(() -> new BusinessExceptionHandler(ErrorCode.MEMBER_NOT_FOUND));

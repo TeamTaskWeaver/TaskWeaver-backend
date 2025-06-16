@@ -28,7 +28,7 @@ public class TeamController {
 
     @Operation(summary = "팀 생성")
     @PostMapping("/team")
-    public ResponseEntity<ApiResponse<TeamResponse.teamCreateResponse>> createTeam(@RequestBody TeamRequest.teamCreateRequest request, @AuthenticationPrincipal User user) {
+    public ResponseEntity<ApiResponse<TeamResponse.TeamCreateResponse>> createTeam(@RequestBody TeamRequest.TeamCreateRequest request, @AuthenticationPrincipal User user) {
         try {
             ApiResponse apiResponse = ApiResponse.builder()
                     .result(teamService.createTeam(request, Long.parseLong(user.getUsername())))

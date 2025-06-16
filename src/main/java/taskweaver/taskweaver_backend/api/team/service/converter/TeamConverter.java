@@ -6,10 +6,11 @@ import taskweaver.taskweaver_backend.api.team.service.response.TeamResponse;
 import taskweaver.taskweaver_backend.domain.member.model.Member;
 import taskweaver.taskweaver_backend.domain.team.model.Team;
 
+import java.util.List;
 import java.util.UUID;
 @Component
 public class TeamConverter {
-    public static Team toCreateRequest(TeamRequest.teamCreateRequest request, Member teamLeader) {
+    public static Team toCreateRequest(TeamRequest.TeamCreateRequest request, Member teamLeader) {
         return Team.builder()
                 .name(request.getName())
                 .description(request.getDescription())
@@ -19,8 +20,8 @@ public class TeamConverter {
     }
 
 
-    public static TeamResponse.teamCreateResponse toCreateResponse(Team team) {
-        return new TeamResponse.teamCreateResponse(
+    public static TeamResponse.TeamCreateResponse toCreateResponse(Team team) {
+        return new TeamResponse.TeamCreateResponse(
                 team.getId(),
                 team.getName(),
                 team.getDescription(),
@@ -30,9 +31,22 @@ public class TeamConverter {
         );
     }
 
+    public static TeamResponse.TeamListResponse toListResponse(Team team, String myRole) {
+        return new TeamResponse.TeamListResponse(
+                team.getId(),
+                team.getName(),
+                team.getDescription(),
+                team.getCreatedAt(),
+                myRole
+        );
+    }
+
+
     public static String generateInviteLink() {
         UUID uuid = UUID.randomUUID();
         // 도메인 결정 후
         return "https://localhost:" + "8081" + "/invite/" + uuid.toString();
     }
+
+
 }
