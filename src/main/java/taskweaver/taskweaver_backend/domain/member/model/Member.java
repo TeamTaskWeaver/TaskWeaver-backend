@@ -30,4 +30,8 @@ public class Member extends BaseEntity {
     @Column(name = "login_type", nullable = false, length = 20)
     private LoginType loginType;
 
+    // 새로 추가할 닉네임 업데이트 메서드
+    public void updateNickname(String newNickname) {
+        this.nickname = newNickname;
+    }
 }

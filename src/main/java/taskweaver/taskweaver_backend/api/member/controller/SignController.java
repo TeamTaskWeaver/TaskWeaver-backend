@@ -7,11 +7,15 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import taskweaver.taskweaver_backend.api.member.controller.request.NicknameUpdateRequest;
 import taskweaver.taskweaver_backend.api.member.controller.request.SignInRequest;
 import taskweaver.taskweaver_backend.api.member.controller.request.SignUpRequest;
 
+import taskweaver.taskweaver_backend.api.member.service.MemberService;
 import taskweaver.taskweaver_backend.api.member.service.SignService;
 import taskweaver.taskweaver_backend.common.code.ApiResponse;
 import taskweaver.taskweaver_backend.common.code.SuccessCode;
@@ -24,6 +28,7 @@ import taskweaver.taskweaver_backend.common.code.SuccessCode;
 @Validated
 public class SignController {
     private final SignService signService;
+    private final MemberService memberService;
 
     @Operation(summary = "회원 가입")
     @PostMapping(value = "/v1/auth/sign-up")
@@ -48,6 +53,7 @@ public class SignController {
         return new ResponseEntity<>(ar, HttpStatus.OK);
     }
 
+    @Operation(summary = "카카오 로그인")
     @GetMapping("/v1/auth/kakao")
     public ResponseEntity<ApiResponse> getLogin(@RequestParam("code") String code) {
         ApiResponse ar = ApiResponse.builder()
@@ -57,4 +63,21 @@ public class SignController {
                 .build();
         return new ResponseEntity<>(ar, HttpStatus.OK);
     }
+
+
+    @Operation(summary = "닉네임 업데이트")
+    @PatchMapping("/v1/auth/nickname")
+    public ResponseEntity<ApiResponse> updateNickname(@RequestBody NicknameUpdateRequest request, @AuthenticationPrincipal User user) {
+
+        Long memberId = Long.parseLong(user.getUsername());
+        memberService.updateNickname(memberId, request.getNickname());
+
+        ApiResponse ar = ApiResponse.builder()
+                .result(null) // 업데이트는 보통 반환할 데이터가 없습니다.
+                .resultCode(SuccessCode.UPDATE_SUCCESS.getStatus())
+                .resultMsg(SuccessCode.UPDATE_SUCCESS.getMessage())
+                .build();
+        return new ResponseEntity<>(ar, HttpStatus.OK);
+    }
+
 }
