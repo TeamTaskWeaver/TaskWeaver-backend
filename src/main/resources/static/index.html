@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kakao Login Test</title>
+  <script>
+    // 여기에 여러분의 카카오 REST API 키를 넣어주세요.
+    const KAKAO_API_KEY = "ddf29f286de13c01cf11801a9048fdaa";
+    // 여기에 여러분의 백엔드 Redirect URI를 넣어주세요.
+    const REDIRECT_URI = "http://localhost:9000/v1/auth/kakao";
+
+    function kakaoLogin() {
+      const kakaoAuthUrl = `https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=<span class="math-inline">\{KAKAO\_API\_KEY\}&redirect\_uri\=</span>{REDIRECT_URI}`;
+      window.location.href = kakaoAuthUrl;
+    }
+
+    // 페이지 로드 시 URL 파라미터 확인 (백엔드에서 받은 응답 확인용)
+    window.onload = function() {
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.has('result') || urlParams.has('resultCode') || urlParams.has('resultMsg')) {
+        // 백엔드에서 반환한 ApiResponse 결과를 여기에 표시
+        document.getElementById('backendResponse').innerText = JSON.stringify(Object.fromEntries(urlParams.entries()), null, 2);
+      }
+    };
+  </script>
+</head>
+<body>
+<h1>카카오 로그인 테스트</h1>
+<button onclick="kakaoLogin()">카카오 로그인</button>
+<pre id="backendResponse"></pre>
+<p>
+  참고: 이 페이지에서 '카카오 로그인' 버튼을 누르면 카카오 로그인 페이지로 이동합니다.<br>
+  로그인 성공 시, 백엔드의 `http://localhost:9000/v1/auth/kakao`로 `code`와 함께 리다이렉트되고,<br>
+  백엔드가 처리한 결과(예: 이메일)가 다시 이 페이지로 리다이렉트되면서 `URL` 파라미터로 표시될 것입니다.
+</p>
+</body>
+</html>
