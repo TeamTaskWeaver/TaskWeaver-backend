@@ -12,6 +12,8 @@ import taskweaver.taskweaver_backend.domain.team.model.TeamMember;
 import taskweaver.taskweaver_backend.domain.team.model.TeamRole;
 import taskweaver.taskweaver_backend.domain.team.repository.TeamMemberRepository;
 
+import java.util.List;
+
 
 @Component
 @RequiredArgsConstructor
@@ -26,6 +28,11 @@ public class TeamMemberManager {
                 .role(TeamRole.LEADER)
                 .build();
         teamMemberRepository.save(tm);
+    }
+
+    public List<TeamMember> getMembershipsForUser(Long userId) {
+
+        return teamMemberRepository.findByUserIdWithTeam(userId);
     }
 }
 

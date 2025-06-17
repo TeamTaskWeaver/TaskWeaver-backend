@@ -11,7 +11,12 @@ import taskweaver.taskweaver_backend.common.exception.handler.BusinessExceptionH
 import taskweaver.taskweaver_backend.domain.member.model.Member;
 import taskweaver.taskweaver_backend.domain.member.repository.MemberRepository;
 import taskweaver.taskweaver_backend.domain.team.model.Team;
+import taskweaver.taskweaver_backend.domain.team.model.TeamMember;
+import taskweaver.taskweaver_backend.domain.team.repository.TeamMemberRepository;
 import taskweaver.taskweaver_backend.domain.team.repository.TeamRepository;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -20,6 +25,7 @@ public class TeamService {
     private final TeamRepository teamRepository;
     private final TeamMemberManager teamMemberManager;
     private final MemberRepository memberRepository;
+
 
     @Transactional
     public TeamResponse.TeamCreateResponse createTeam(TeamRequest.TeamCreateRequest request, Long userId) {
@@ -32,5 +38,17 @@ public class TeamService {
         team = teamRepository.save(team);
         teamMemberManager.addLeaderToTeam(team, leader);
         return TeamConverter.toCreateResponse(team);
+    }
+
+    public List<TeamResponse.TeamListResponse> getMyTeams(Long currentUserId) {
+        Member leader = memberRepository.findById(currentUserId)
+                .orElseThrow(() -> new BusinessExceptionHandler(ErrorCode.MEMBER_NOT_FOUND));
+
+        List<TeamMember> userTeams = teamMemberManager.getMembershipsForUser(leader.getId());
+
+
+        return userTeams.stream()
+                .map(userTeam -> TeamConverter.toListResponse(userTeam.getTeam(), userTeam.getRole().name()))
+                .collect(Collectors.toList());
     }
 }
