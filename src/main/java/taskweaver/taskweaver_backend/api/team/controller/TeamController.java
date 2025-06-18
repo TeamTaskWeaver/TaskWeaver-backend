@@ -10,6 +10,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
 import taskweaver.taskweaver_backend.api.team.controller.request.TeamRequest;
+import taskweaver.taskweaver_backend.api.team.service.TeamInviteService;
 import taskweaver.taskweaver_backend.api.team.service.TeamService;
 import taskweaver.taskweaver_backend.api.team.service.response.TeamResponse;
 import taskweaver.taskweaver_backend.common.code.ApiResponse;
@@ -23,6 +24,7 @@ import taskweaver.taskweaver_backend.common.code.SuccessCode;
 public class TeamController {
 
     private final TeamService teamService;
+    private final TeamInviteService teamInviteService;
 
     @Operation(summary = "팀 생성")
     @PostMapping("v1/teams")
@@ -67,6 +69,36 @@ public class TeamController {
                 .resultMsg(SuccessCode.UPDATE_SUCCESS.getMessage())
                 .build();
         return ResponseEntity.status(HttpStatus.OK).body(apiResponse);
+    }
 
+    @Operation(summary = "초대 링크로 팀 정보 조회")
+    @GetMapping("v1/teams/invites/{inviteLink}")
+    public ResponseEntity<ApiResponse<TeamResponse.TeamInviteInfoResponse>> getTeamInfo(
+            @PathVariable(name = "inviteLink") String inviteLink) {
+
+        TeamResponse.TeamInviteInfoResponse responseDto = teamInviteService.getTeamInfoByInviteCode(inviteLink);
+        ApiResponse apiResponse = ApiResponse.builder()
+                .result(responseDto)
+                .resultCode(SuccessCode.SELECT_SUCCESS.getStatus())
+                .resultMsg(SuccessCode.SELECT_SUCCESS.getMessage())
+                .build();
+        return ResponseEntity.status(HttpStatus.OK).body(apiResponse);
+    }
+
+    @Operation(summary = "팀 초대 수락")
+    @PostMapping("v1/teams/invites/{inviteLink}/accept")
+    public ResponseEntity<ApiResponse<TeamResponse.TeamJoinSuccessResponse>> acceptInvitation(
+            @PathVariable(name = "inviteLink") String inviteLink,
+            @AuthenticationPrincipal User user) {
+
+        ApiResponse apiResponse = ApiResponse.builder()
+                .result(teamInviteService.acceptInvitation(
+                        inviteLink,
+                        Long.parseLong(user.getUsername())
+                ))
+                .resultCode(SuccessCode.INSERT_SUCCESS.getStatus())
+                .resultMsg(SuccessCode.INSERT_SUCCESS.getMessage())
+                .build();
+        return ResponseEntity.status(HttpStatus.CREATED).body(apiResponse);
     }
 }

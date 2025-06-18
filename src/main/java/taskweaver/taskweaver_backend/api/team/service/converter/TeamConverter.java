@@ -5,6 +5,7 @@ import taskweaver.taskweaver_backend.api.team.controller.request.TeamRequest;
 import taskweaver.taskweaver_backend.api.team.service.response.TeamResponse;
 import taskweaver.taskweaver_backend.domain.member.model.Member;
 import taskweaver.taskweaver_backend.domain.team.model.Team;
+import taskweaver.taskweaver_backend.domain.team.model.TeamRole;
 
 import java.util.UUID;
 @Component
@@ -51,10 +52,28 @@ public class TeamConverter {
         );
     }
 
+    public static TeamResponse.TeamInviteInfoResponse toTeamInviteInfoResponse(Team team) {
+        return new TeamResponse.TeamInviteInfoResponse(
+                team.getId(),
+                team.getName()
+        );
+    }
+
+    public static TeamResponse.TeamJoinSuccessResponse toTeamJoinSuccessResponse(Team team, Member member, TeamRole memberRole) {
+        return new TeamResponse.TeamJoinSuccessResponse(
+                team.getId(),
+                member.getId(),
+                team.getName(),
+                memberRole.toString()
+        );
+    }
+
+
+
     public static String generateInviteLink() {
         UUID uuid = UUID.randomUUID();
         // 도메인 결정 후
-        return "https://localhost:" + "8081" + "/invite/" + uuid.toString();
+        return uuid.toString();
     }
 
 

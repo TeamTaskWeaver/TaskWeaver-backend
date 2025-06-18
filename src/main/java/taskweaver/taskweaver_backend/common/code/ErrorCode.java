@@ -95,6 +95,8 @@ public enum ErrorCode {
     // TEAM
     TEAM_NOT_FOUND(404, "T001", "Team Not Found"),
     TEAM_MEMBER_NOT_FOUND(404, "T002", "Team member Not Found"),
+    TEAM_INVITE_LINK_NOT_FOUND(404, "T003", "해당 초대 링크를 가진 팀을 찾을 수 없습니다."),
+    ALREADY_TEAM_MEMBER(409, "T004", "이미 해당 팀의 멤버입니다."),
 
     TEAM_MEMBER_STATE_NOT_FOUND(404, "T003", "No matching data in the team invitation status table."),
     INVITATION_ALREADY_SENT(404, "T004", "The invitation has already been sent."),
