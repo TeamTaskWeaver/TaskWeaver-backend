@@ -1,6 +1,7 @@
 package taskweaver.taskweaver_backend.domain.team.model;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.SQLRestriction;
 import taskweaver.taskweaver_backend.domain.BaseEntity;
 import taskweaver.taskweaver_backend.domain.member.model.Member;
 
@@ -9,6 +10,7 @@ import taskweaver.taskweaver_backend.domain.member.model.Member;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
+@SQLRestriction("deleted_at IS NULL")
 public class Team extends BaseEntity {
 
     @Id
@@ -28,4 +30,8 @@ public class Team extends BaseEntity {
     @JoinColumn(name = "team_leader_id")
     private Member teamLeader;
 
+    public void updateTeamInfo(String name, String description) {
+        this.name = name;
+        this.description = description;
+    }
 }

@@ -6,7 +6,6 @@ import taskweaver.taskweaver_backend.api.team.service.response.TeamResponse;
 import taskweaver.taskweaver_backend.domain.member.model.Member;
 import taskweaver.taskweaver_backend.domain.team.model.Team;
 
-import java.util.List;
 import java.util.UUID;
 @Component
 public class TeamConverter {
@@ -41,6 +40,16 @@ public class TeamConverter {
         );
     }
 
+    public static TeamResponse.TeamUpdateResponse toUpdateResponse(Team team) {
+        return new TeamResponse.TeamUpdateResponse(
+                team.getId(),
+                team.getName(),
+                team.getDescription(),
+                team.getInviteLink(),
+                team.getTeamLeader().getId(),
+                team.getModifiedAt()
+        );
+    }
 
     public static String generateInviteLink() {
         UUID uuid = UUID.randomUUID();

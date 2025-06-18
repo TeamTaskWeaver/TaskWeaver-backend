@@ -15,4 +15,13 @@ public class TeamRequest {
         @Schema(description = "팀 소개", example = "Team Description")
         String description;
     }
+
+    @Getter
+    public static class TeamUpdateRequest {
+        @Schema(description = "팀 이름", example = "Team Name")
+        String name;
+
+        @Schema(description = "팀 소개", example = "Team Description")
+        String description;
+    }
 }
