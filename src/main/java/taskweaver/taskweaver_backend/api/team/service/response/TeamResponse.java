@@ -43,4 +43,17 @@ public class TeamResponse {
         @Schema(description = "로그인한 유저 권한", example = "LEADER")
         String myRole;
     }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class TeamUpdateResponse {
+        Long id;
+        String name;
+        String description;
+        String inviteLink;
+        Long teamLeader;
+        LocalDateTime updateAt;
+    }
 }

@@ -8,10 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.User;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import taskweaver.taskweaver_backend.api.team.controller.request.TeamRequest;
 import taskweaver.taskweaver_backend.api.team.service.TeamService;
 import taskweaver.taskweaver_backend.api.team.service.response.TeamResponse;
@@ -28,22 +25,18 @@ public class TeamController {
     private final TeamService teamService;
 
     @Operation(summary = "팀 생성")
-    @PostMapping("/teams")
+    @PostMapping("v1/teams")
     public ResponseEntity<ApiResponse<TeamResponse.TeamCreateResponse>> createTeam(@RequestBody TeamRequest.TeamCreateRequest request, @AuthenticationPrincipal User user) {
-        try {
-            ApiResponse apiResponse = ApiResponse.builder()
-                    .result(teamService.createTeam(request, Long.parseLong(user.getUsername())))
-                    .resultCode(SuccessCode.INSERT_SUCCESS.getStatus())
-                    .resultMsg(SuccessCode.INSERT_SUCCESS.getMessage())
-                    .build();
-            return ResponseEntity.status(HttpStatus.CREATED).body(apiResponse);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        ApiResponse apiResponse = ApiResponse.builder()
+                .result(teamService.createTeam(request, Long.parseLong(user.getUsername())))
+                .resultCode(SuccessCode.INSERT_SUCCESS.getStatus())
+                .resultMsg(SuccessCode.INSERT_SUCCESS.getMessage())
+                .build();
+        return ResponseEntity.status(HttpStatus.CREATED).body(apiResponse);
     }
 
     @Operation(summary =  "로그인한 유저의 팀 전체 조회")
-    @GetMapping("/teams")
+    @GetMapping("v1/teams")
     public ResponseEntity<ApiResponse<TeamResponse.TeamListResponse>> AllTeam(@AuthenticationPrincipal User user) {
         ApiResponse apiResponse = ApiResponse.builder()
                 .result(teamService.getMyTeams(Long.parseLong(user.getUsername())))
@@ -51,5 +44,29 @@ public class TeamController {
                 .resultMsg(SuccessCode.SELECT_SUCCESS.getMessage())
                 .build();
         return ResponseEntity.status(HttpStatus.OK).body(apiResponse);
+    }
+
+    @Operation(summary = "팀 삭제")
+    @DeleteMapping("v1/teams/{teamId}")
+    public ResponseEntity<ApiResponse> deleteTeam(@PathVariable(name = "teamId") Long teamId, @AuthenticationPrincipal User user) {
+        teamService.deleteTeam(teamId, Long.parseLong(user.getUsername()));
+        ApiResponse apiResponse = ApiResponse.builder()
+                .resultCode(SuccessCode.DELETE_SUCCESS.getStatus())
+                .resultMsg(SuccessCode.DELETE_SUCCESS.getMessage())
+                .build();
+
+        return ResponseEntity.status(HttpStatus.OK).body(apiResponse);
+    }
+
+    @Operation(summary = "팀 수정")
+    @PatchMapping("v1/teams/{teamId}")
+    public ResponseEntity<ApiResponse<TeamResponse.TeamUpdateResponse>> updateTeam(@PathVariable(name = "teamId") Long teamId, @RequestBody TeamRequest.TeamUpdateRequest request, @AuthenticationPrincipal User user) {
+        ApiResponse apiResponse = ApiResponse.builder()
+                .result(teamService.updateTeam(teamId, request, Long.parseLong(user.getUsername())))
+                .resultCode(SuccessCode.UPDATE_SUCCESS.getStatus())
+                .resultMsg(SuccessCode.UPDATE_SUCCESS.getMessage())
+                .build();
+        return ResponseEntity.status(HttpStatus.OK).body(apiResponse);
+
     }
 }
