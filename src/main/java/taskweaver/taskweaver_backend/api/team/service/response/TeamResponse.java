@@ -56,4 +56,14 @@ public class TeamResponse {
         Long teamLeader;
         LocalDateTime updateAt;
     }
+
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class TeamInviteInfoResponse {
+        private Long teamId;
+        private String name;
+    }
 }

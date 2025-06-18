@@ -51,10 +51,16 @@ public class TeamConverter {
         );
     }
 
+    public static TeamResponse.TeamInviteInfoResponse toTeamInviteInfoResponse(Team team) {
+        return new TeamResponse.TeamInviteInfoResponse(
+                team.getId(),
+                team.getName()
+        );
+    }
     public static String generateInviteLink() {
         UUID uuid = UUID.randomUUID();
         // 도메인 결정 후
-        return "https://localhost:" + "8081" + "/invite/" + uuid.toString();
+        return uuid.toString();
     }
 
 
