@@ -70,10 +70,9 @@ public class TeamService {
         return TeamConverter.toUpdateResponse(team);
     }
 
+
     private Team getTeamOrThrow(Long teamId) {
         return teamRepository.findById(teamId)
                 .orElseThrow(() -> new BusinessExceptionHandler(ErrorCode.TEAM_NOT_FOUND));
     }
-
-
 }

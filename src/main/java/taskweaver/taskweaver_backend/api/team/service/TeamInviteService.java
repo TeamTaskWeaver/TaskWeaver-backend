@@ -7,8 +7,11 @@ import taskweaver.taskweaver_backend.api.team.service.converter.TeamConverter;
 import taskweaver.taskweaver_backend.api.team.service.response.TeamResponse;
 import taskweaver.taskweaver_backend.common.code.ErrorCode;
 import taskweaver.taskweaver_backend.common.exception.handler.BusinessExceptionHandler;
+import taskweaver.taskweaver_backend.domain.member.model.Member;
 import taskweaver.taskweaver_backend.domain.member.repository.MemberRepository;
 import taskweaver.taskweaver_backend.domain.team.model.Team;
+import taskweaver.taskweaver_backend.domain.team.model.TeamMember;
+import taskweaver.taskweaver_backend.domain.team.model.TeamRole;
 import taskweaver.taskweaver_backend.domain.team.repository.TeamMemberRepository;
 import taskweaver.taskweaver_backend.domain.team.repository.TeamRepository;
 
@@ -18,11 +21,36 @@ import taskweaver.taskweaver_backend.domain.team.repository.TeamRepository;
 public class TeamInviteService {
 
     private final TeamRepository teamRepository;
+    private final MemberRepository memberRepository;
+    private final TeamMemberRepository teamMemberRepository;
 
     public TeamResponse.TeamInviteInfoResponse getTeamInfoByInviteCode(String inviteLink) {
         Team team = teamRepository.findByInviteLink(inviteLink)
                 .orElseThrow(() -> new BusinessExceptionHandler(ErrorCode.TEAM_INVITE_LINK_NOT_FOUND));
 
         return TeamConverter.toTeamInviteInfoResponse(team);
+    }
+
+    @Transactional
+    public TeamResponse.TeamJoinSuccessResponse acceptInvitation(String inviteLink, Long userId) {
+        Team team = teamRepository.findByInviteLink(inviteLink)
+                .orElseThrow(() -> new BusinessExceptionHandler(ErrorCode.TEAM_NOT_FOUND));
+
+        Member member = memberRepository.findById(userId)
+                .orElseThrow(() -> new BusinessExceptionHandler(ErrorCode.MEMBER_NOT_FOUND));
+
+
+        if (teamMemberRepository.existsByTeamAndMember(team, member)) {
+            throw new BusinessExceptionHandler(ErrorCode.ALREADY_TEAM_MEMBER);
+        }
+
+        TeamMember newTeamMember = TeamMember.builder()
+                .team(team)
+                .member(member)
+                .role(TeamRole.MEMBER)
+                .build();
+        teamMemberRepository.save(newTeamMember);
+
+        return TeamConverter.toTeamJoinSuccessResponse(team, member, newTeamMember.getRole());
     }
 }

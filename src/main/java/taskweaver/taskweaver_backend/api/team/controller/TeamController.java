@@ -84,4 +84,21 @@ public class TeamController {
                 .build();
         return ResponseEntity.status(HttpStatus.OK).body(apiResponse);
     }
+
+    @Operation(summary = "팀 초대 수락")
+    @PostMapping("v1/teams/invites/{inviteLink}/accept")
+    public ResponseEntity<ApiResponse<TeamResponse.TeamJoinSuccessResponse>> acceptInvitation(
+            @PathVariable(name = "inviteLink") String inviteLink,
+            @AuthenticationPrincipal User user) {
+
+        ApiResponse apiResponse = ApiResponse.builder()
+                .result(teamInviteService.acceptInvitation(
+                        inviteLink,
+                        Long.parseLong(user.getUsername())
+                ))
+                .resultCode(SuccessCode.INSERT_SUCCESS.getStatus())
+                .resultMsg(SuccessCode.INSERT_SUCCESS.getMessage())
+                .build();
+        return ResponseEntity.status(HttpStatus.CREATED).body(apiResponse);
+    }
 }

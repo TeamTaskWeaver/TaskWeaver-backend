@@ -58,6 +58,7 @@ public class TeamResponse {
     }
 
 
+    // 초대 정보 확인 응답 DTO
     @Builder
     @Getter
     @NoArgsConstructor
@@ -65,5 +66,17 @@ public class TeamResponse {
     public static class TeamInviteInfoResponse {
         private Long teamId;
         private String name;
+    }
+
+    // 초대 수락 성공 응답 DTO
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class TeamJoinSuccessResponse {
+        private Long teamId;
+        private Long memberId;
+        private String teamName;
+        private String role;
     }
 }
