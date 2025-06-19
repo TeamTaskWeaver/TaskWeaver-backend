@@ -22,7 +22,7 @@ public class TeamInviteService {
 
     private final TeamRepository teamRepository;
     private final MemberRepository memberRepository;
-    private final TeamMemberRepository teamMemberRepository;
+    private final TeamMemberManager teamMemberManager;
 
     public TeamResponse.TeamInviteInfoResponse getTeamInfoByInviteCode(String inviteLink) {
         Team team = teamRepository.findByInviteLink(inviteLink)
@@ -40,16 +40,8 @@ public class TeamInviteService {
                 .orElseThrow(() -> new BusinessExceptionHandler(ErrorCode.MEMBER_NOT_FOUND));
 
 
-        if (teamMemberRepository.existsByTeamAndMember(team, member)) {
-            throw new BusinessExceptionHandler(ErrorCode.ALREADY_TEAM_MEMBER);
-        }
+        TeamMember newTeamMember = teamMemberManager.joinTeamAsMember(team, member);
 
-        TeamMember newTeamMember = TeamMember.builder()
-                .team(team)
-                .member(member)
-                .role(TeamRole.MEMBER)
-                .build();
-        teamMemberRepository.save(newTeamMember);
 
         return TeamConverter.toTeamJoinSuccessResponse(team, member, newTeamMember.getRole());
     }

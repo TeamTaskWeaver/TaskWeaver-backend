@@ -71,6 +71,28 @@ public class TeamService {
     }
 
 
+    public TeamResponse.TeamMemberListResponse getTeamMembers(Long teamId, Long currentUserId) {
+
+//        if (!teamMemberManager.isTeamMember(teamId, currentUserId)) {
+//            throw new BusinessExceptionHandler(ErrorCode.FORBIDDEN_ACCESS);
+//        }
+        List<TeamMember> teamMembers = teamMemberManager.findTeamMembersByTeamId(teamId);
+
+        List<TeamResponse.TeamMemberResponse> memberDtoList = teamMembers.stream()
+                .map(teamMember -> TeamResponse.TeamMemberResponse.builder()
+                        .memberId(teamMember.getMember().getId())
+                        .nickname(teamMember.getMember().getNickname())
+                        .role(teamMember.getRole().name())
+                        .build())
+                .collect(Collectors.toList());
+
+
+        return TeamResponse.TeamMemberListResponse.builder()
+                .totalCount(memberDtoList.size())
+                .members(memberDtoList)
+                .build();
+    }
+
     private Team getTeamOrThrow(Long teamId) {
         return teamRepository.findById(teamId)
                 .orElseThrow(() -> new BusinessExceptionHandler(ErrorCode.TEAM_NOT_FOUND));
