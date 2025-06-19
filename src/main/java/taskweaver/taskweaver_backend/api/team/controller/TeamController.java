@@ -101,4 +101,22 @@ public class TeamController {
                 .build();
         return ResponseEntity.status(HttpStatus.CREATED).body(apiResponse);
     }
+
+
+    @Operation(summary = "팀 멤버 전체 조회")
+    @GetMapping("v1/teams/{teamId}/members")
+    public ResponseEntity<ApiResponse<TeamResponse.TeamMemberListResponse>> getTeamMembers(
+            @PathVariable(name = "teamId") Long teamId,
+            @AuthenticationPrincipal User user) {
+        ApiResponse apiResponse = ApiResponse.builder()
+                .result(teamService.getTeamMembers(
+                        teamId,
+                        Long.parseLong(user.getUsername())
+                ))
+                .resultCode(SuccessCode.SELECT_SUCCESS.getStatus())
+                .resultMsg(SuccessCode.SELECT_SUCCESS.getMessage())
+                .build();
+
+        return ResponseEntity.status(HttpStatus.OK).body(apiResponse);
+    }
 }

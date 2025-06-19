@@ -71,6 +71,7 @@ public enum ErrorCode {
 
     // 이미 로그아웃된 회원의 토큰일 때
     MEMBER_LOGGED_OUT(401, "G019", "User has already logged out."),
+    FORBIDDEN_ACCESS(403, "C005", "접근 권한이 없습니다."),
 
     /**
      * ******************************* Custom Error CodeList ***************************************

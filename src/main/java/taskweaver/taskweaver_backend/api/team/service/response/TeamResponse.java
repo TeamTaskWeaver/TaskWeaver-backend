@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class TeamResponse {
     @Builder
@@ -78,5 +79,24 @@ public class TeamResponse {
         private Long memberId;
         private String teamName;
         private String role;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class TeamMemberResponse {
+        private Long memberId;
+        private String nickname;
+        private String role;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class TeamMemberListResponse {
+        private int totalCount;
+        private List<TeamMemberResponse> members;
     }
 }
