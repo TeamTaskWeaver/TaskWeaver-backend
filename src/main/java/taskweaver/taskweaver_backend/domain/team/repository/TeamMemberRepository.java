@@ -9,6 +9,7 @@ import taskweaver.taskweaver_backend.domain.team.model.Team;
 import taskweaver.taskweaver_backend.domain.team.model.TeamMember;
 
 import java.util.List;
+import java.util.Optional;
 
 
 @Repository
@@ -21,6 +22,9 @@ public interface TeamMemberRepository extends JpaRepository<TeamMember, Long> {
     List<TeamMember> findAllByTeamIdWithMember(@Param("teamId") Long teamId);
 
     boolean existsByTeamIdAndMemberId(Long teamId, Long memberId);
+
+    Optional<TeamMember> findByTeamIdAndMemberId(Long teamId, Long memberId);
+
 
 
 }

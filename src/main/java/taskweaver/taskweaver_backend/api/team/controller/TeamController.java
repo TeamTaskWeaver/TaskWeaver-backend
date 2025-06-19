@@ -2,6 +2,7 @@ package taskweaver.taskweaver_backend.api.team.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -10,6 +11,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
 import taskweaver.taskweaver_backend.api.team.controller.request.TeamRequest;
+import taskweaver.taskweaver_backend.api.team.service.TeamAdminService;
 import taskweaver.taskweaver_backend.api.team.service.TeamInviteService;
 import taskweaver.taskweaver_backend.api.team.service.TeamService;
 import taskweaver.taskweaver_backend.api.team.service.response.TeamResponse;
@@ -25,6 +27,7 @@ public class TeamController {
 
     private final TeamService teamService;
     private final TeamInviteService teamInviteService;
+    private final TeamAdminService teamAdminService;
 
     @Operation(summary = "팀 생성")
     @PostMapping("v1/teams")
@@ -119,4 +122,24 @@ public class TeamController {
 
         return ResponseEntity.status(HttpStatus.OK).body(apiResponse);
     }
+
+
+    @PatchMapping("v1/teams/{teamId}/leader")
+    @Operation(summary = "팀장 위임")
+    public ResponseEntity<ApiResponse<Object>> changeTeamLeader(
+            @PathVariable Long teamId,
+            @RequestBody @Valid TeamRequest.ChangeLeaderRequest request,
+            @AuthenticationPrincipal User user) {
+        teamAdminService.changeTeamLeader(
+                teamId,
+                request.getNewLeaderId(),
+                Long.parseLong(user.getUsername())
+        );
+        ApiResponse apiResponse = ApiResponse.builder()
+                .resultCode(SuccessCode.UPDATE_SUCCESS.getStatus())
+                .resultMsg("팀장 위임이 성공적으로 완료되었습니다.")
+                .build();
+        return ResponseEntity.status(HttpStatus.OK).body(apiResponse);
+    }
+
 }
