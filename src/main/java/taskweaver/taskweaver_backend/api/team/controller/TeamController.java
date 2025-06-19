@@ -18,11 +18,14 @@ import taskweaver.taskweaver_backend.api.team.service.response.TeamResponse;
 import taskweaver.taskweaver_backend.common.code.ApiResponse;
 import taskweaver.taskweaver_backend.common.code.SuccessCode;
 
+import java.util.List;
 
-@Tag(name = "팀 관련")
+
+@Tag(name = "팀 API")
 @RequiredArgsConstructor
 @Slf4j
 @RestController
+@RequestMapping("/v1/teams")
 public class TeamController {
 
     private final TeamService teamService;
@@ -30,98 +33,57 @@ public class TeamController {
     private final TeamAdminService teamAdminService;
 
     @Operation(summary = "팀 생성")
-    @PostMapping("v1/teams")
+    @PostMapping
     public ResponseEntity<ApiResponse<TeamResponse.TeamCreateResponse>> createTeam(@RequestBody TeamRequest.TeamCreateRequest request, @AuthenticationPrincipal User user) {
-        ApiResponse apiResponse = ApiResponse.builder()
-                .result(teamService.createTeam(request, Long.parseLong(user.getUsername())))
-                .resultCode(SuccessCode.INSERT_SUCCESS.getStatus())
-                .resultMsg(SuccessCode.INSERT_SUCCESS.getMessage())
-                .build();
-        return ResponseEntity.status(HttpStatus.CREATED).body(apiResponse);
+        TeamResponse.TeamCreateResponse data = teamService.createTeam(request, Long.parseLong(user.getUsername()));
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(ApiResponse.onSuccess(SuccessCode.INSERT_SUCCESS, data));
     }
 
     @Operation(summary =  "로그인한 유저의 팀 전체 조회")
-    @GetMapping("v1/teams")
-    public ResponseEntity<ApiResponse<TeamResponse.TeamListResponse>> AllTeam(@AuthenticationPrincipal User user) {
-        ApiResponse apiResponse = ApiResponse.builder()
-                .result(teamService.getMyTeams(Long.parseLong(user.getUsername())))
-                .resultCode(SuccessCode.SELECT_SUCCESS.getStatus())
-                .resultMsg(SuccessCode.SELECT_SUCCESS.getMessage())
-                .build();
-        return ResponseEntity.status(HttpStatus.OK).body(apiResponse);
+    @GetMapping
+    public ApiResponse<List<TeamResponse.TeamListResponse>> getMyTeams(
+            @AuthenticationPrincipal User user) {
+
+        return ApiResponse.onSuccess(
+                SuccessCode.SELECT_SUCCESS,
+                teamService.getMyTeams(Long.parseLong(user.getUsername()))
+        );
     }
 
     @Operation(summary = "팀 삭제")
-    @DeleteMapping("v1/teams/{teamId}")
-    public ResponseEntity<ApiResponse> deleteTeam(@PathVariable(name = "teamId") Long teamId, @AuthenticationPrincipal User user) {
+    @DeleteMapping("/{teamId}")
+    public ApiResponse<?> deleteTeam(@PathVariable(name = "teamId") Long teamId, @AuthenticationPrincipal User user) {
         teamService.deleteTeam(teamId, Long.parseLong(user.getUsername()));
-        ApiResponse apiResponse = ApiResponse.builder()
-                .resultCode(SuccessCode.DELETE_SUCCESS.getStatus())
-                .resultMsg(SuccessCode.DELETE_SUCCESS.getMessage())
-                .build();
-
-        return ResponseEntity.status(HttpStatus.OK).body(apiResponse);
+        return ApiResponse.onSuccess(SuccessCode.DELETE_SUCCESS);
     }
 
     @Operation(summary = "팀 수정")
-    @PatchMapping("v1/teams/{teamId}")
-    public ResponseEntity<ApiResponse<TeamResponse.TeamUpdateResponse>> updateTeam(@PathVariable(name = "teamId") Long teamId, @RequestBody TeamRequest.TeamUpdateRequest request, @AuthenticationPrincipal User user) {
-        ApiResponse apiResponse = ApiResponse.builder()
-                .result(teamService.updateTeam(teamId, request, Long.parseLong(user.getUsername())))
-                .resultCode(SuccessCode.UPDATE_SUCCESS.getStatus())
-                .resultMsg(SuccessCode.UPDATE_SUCCESS.getMessage())
-                .build();
-        return ResponseEntity.status(HttpStatus.OK).body(apiResponse);
-    }
+    @PatchMapping("/{teamId}")
+    public ApiResponse<TeamResponse.TeamUpdateResponse> updateTeam(@PathVariable(name = "teamId") Long teamId, @RequestBody TeamRequest.TeamUpdateRequest request, @AuthenticationPrincipal User user) {
+        TeamResponse.TeamUpdateResponse responseDto = teamService.updateTeam(
+                teamId,
+                request,
+                Long.parseLong(user.getUsername())
+        );
 
-    @Operation(summary = "초대 링크로 팀 정보 조회")
-    @GetMapping("v1/teams/invites/{inviteLink}")
-    public ResponseEntity<ApiResponse<TeamResponse.TeamInviteInfoResponse>> getTeamInfo(
-            @PathVariable(name = "inviteLink") String inviteLink) {
-
-        TeamResponse.TeamInviteInfoResponse responseDto = teamInviteService.getTeamInfoByInviteCode(inviteLink);
-        ApiResponse apiResponse = ApiResponse.builder()
-                .result(responseDto)
-                .resultCode(SuccessCode.SELECT_SUCCESS.getStatus())
-                .resultMsg(SuccessCode.SELECT_SUCCESS.getMessage())
-                .build();
-        return ResponseEntity.status(HttpStatus.OK).body(apiResponse);
-    }
-
-    @Operation(summary = "팀 초대 수락")
-    @PostMapping("v1/teams/invites/{inviteLink}/accept")
-    public ResponseEntity<ApiResponse<TeamResponse.TeamJoinSuccessResponse>> acceptInvitation(
-            @PathVariable(name = "inviteLink") String inviteLink,
-            @AuthenticationPrincipal User user) {
-
-        ApiResponse apiResponse = ApiResponse.builder()
-                .result(teamInviteService.acceptInvitation(
-                        inviteLink,
-                        Long.parseLong(user.getUsername())
-                ))
-                .resultCode(SuccessCode.INSERT_SUCCESS.getStatus())
-                .resultMsg(SuccessCode.INSERT_SUCCESS.getMessage())
-                .build();
-        return ResponseEntity.status(HttpStatus.CREATED).body(apiResponse);
+        return ApiResponse.onSuccess(SuccessCode.UPDATE_SUCCESS, responseDto);
     }
 
 
     @Operation(summary = "팀 멤버 전체 조회")
-    @GetMapping("v1/teams/{teamId}/members")
-    public ResponseEntity<ApiResponse<TeamResponse.TeamMemberListResponse>> getTeamMembers(
+    @GetMapping("/{teamId}/members")
+    public ApiResponse<TeamResponse.TeamMemberListResponse> getTeamMembers(
             @PathVariable(name = "teamId") Long teamId,
             @AuthenticationPrincipal User user) {
-        ApiResponse apiResponse = ApiResponse.builder()
-                .result(teamService.getTeamMembers(
-                        teamId,
-                        Long.parseLong(user.getUsername())
-                ))
-                .resultCode(SuccessCode.SELECT_SUCCESS.getStatus())
-                .resultMsg(SuccessCode.SELECT_SUCCESS.getMessage())
-                .build();
 
-        return ResponseEntity.status(HttpStatus.OK).body(apiResponse);
+        return ApiResponse.onSuccess(
+                SuccessCode.SELECT_SUCCESS,
+                teamService.getTeamMembers(teamId, Long.parseLong(user.getUsername()))
+        );
     }
+
 
 
     @PatchMapping("v1/teams/{teamId}/leader")
