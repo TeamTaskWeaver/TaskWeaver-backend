@@ -99,6 +99,8 @@ public enum ErrorCode {
     ALREADY_TEAM_MEMBER(409, "T003", "이미 해당 팀의 멤버입니다."),
     CANNOT_APPOINT_SELF_AS_LEADER_AGAIN(400, "T004", "이미 팀장인 멤버입니다."),
     MEMBER_NOT_FOUND_IN_TEAM(404, "T005", "해당 멤버를 팀에서 찾을 수 없습니다."),
+    EMPTY_MEMBER_LIST(400, "T006", "내보낼 팀원 목록이 비어있습니다."),
+    CANNOT_DELETE_LEADER(400, "T005", "팀장은 내보낼 수 없습니다. 먼저 팀장을 위임해주세요."),
 
     TEAM_MEMBER_STATE_NOT_FOUND(404, "T003", "No matching data in the team invitation status table."),
     INVITATION_ALREADY_SENT(404, "T004", "The invitation has already been sent."),

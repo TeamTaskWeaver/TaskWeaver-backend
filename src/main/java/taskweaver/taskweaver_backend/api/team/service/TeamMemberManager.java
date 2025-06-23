@@ -60,6 +60,10 @@ public class TeamMemberManager {
         return teamMemberRepository.save(newTeamMember);
     }
 
+    public void removeMember(Long teamId, Long memberId) {
+        teamMemberRepository.deleteByTeamIdAndMemberId(teamId, memberId);
+    }
+
 
 }
 

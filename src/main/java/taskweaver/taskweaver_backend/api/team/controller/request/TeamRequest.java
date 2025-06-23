@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Getter
 @AllArgsConstructor
 public class TeamRequest {
@@ -30,6 +32,12 @@ public class TeamRequest {
     @NoArgsConstructor
     public static class ChangeLeaderRequest {
         private Long newLeaderId;
+    }
+
+    @Getter
+    @NoArgsConstructor
+    public static class DeleteMembersRequest {
+        private List<Long> memberIds;
     }
 
 }

@@ -84,24 +84,4 @@ public class TeamController {
         );
     }
 
-
-
-    @PatchMapping("v1/teams/{teamId}/leader")
-    @Operation(summary = "팀장 위임")
-    public ResponseEntity<ApiResponse<Object>> changeTeamLeader(
-            @PathVariable Long teamId,
-            @RequestBody @Valid TeamRequest.ChangeLeaderRequest request,
-            @AuthenticationPrincipal User user) {
-        teamAdminService.changeTeamLeader(
-                teamId,
-                request.getNewLeaderId(),
-                Long.parseLong(user.getUsername())
-        );
-        ApiResponse apiResponse = ApiResponse.builder()
-                .resultCode(SuccessCode.UPDATE_SUCCESS.getStatus())
-                .resultMsg("팀장 위임이 성공적으로 완료되었습니다.")
-                .build();
-        return ResponseEntity.status(HttpStatus.OK).body(apiResponse);
-    }
-
 }

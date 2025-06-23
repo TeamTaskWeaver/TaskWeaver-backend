@@ -26,8 +26,6 @@ public class TeamAdminController {
                                             @PathVariable Long teamId,
                                             @RequestBody @Valid TeamRequest.ChangeLeaderRequest request,
                                             @AuthenticationPrincipal User user) {
-
-
         teamAdminService.changeTeamLeader(
                 teamId,
                 request.getNewLeaderId(),
@@ -37,6 +35,20 @@ public class TeamAdminController {
         return ApiResponse.onSuccess(
                 SuccessCode.UPDATE_SUCCESS,
                 "팀장 위임이 성공적으로 완료되었습니다."
+        );
+    }
+
+    @DeleteMapping("/members")
+    @Operation(summary = "팀원 내보내기")
+    public ApiResponse<?> deleteTeamMembers(
+            @PathVariable Long teamId,
+            @RequestBody @Valid TeamRequest.DeleteMembersRequest request,
+            @AuthenticationPrincipal User user) {
+
+        teamAdminService.deleteTeamMembers(teamId, request.getMemberIds(), Long.parseLong(user.getUsername()));
+        return ApiResponse.onSuccess(
+                SuccessCode.DELETE_SUCCESS,
+                "팀원 내보내기가 성공적으로 완료되었습니다."
         );
     }
 }
