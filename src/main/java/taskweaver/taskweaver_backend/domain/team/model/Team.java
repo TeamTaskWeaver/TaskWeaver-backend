@@ -34,4 +34,8 @@ public class Team extends BaseEntity {
         this.name = name;
         this.description = description;
     }
+
+    public void updateTeamLeader(Member newLeader) {
+        this.teamLeader = newLeader;
+    }
 }

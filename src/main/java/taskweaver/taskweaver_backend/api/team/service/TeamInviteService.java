@@ -11,8 +11,6 @@ import taskweaver.taskweaver_backend.domain.member.model.Member;
 import taskweaver.taskweaver_backend.domain.member.repository.MemberRepository;
 import taskweaver.taskweaver_backend.domain.team.model.Team;
 import taskweaver.taskweaver_backend.domain.team.model.TeamMember;
-import taskweaver.taskweaver_backend.domain.team.model.TeamRole;
-import taskweaver.taskweaver_backend.domain.team.repository.TeamMemberRepository;
 import taskweaver.taskweaver_backend.domain.team.repository.TeamRepository;
 
 @Service
@@ -39,9 +37,7 @@ public class TeamInviteService {
         Member member = memberRepository.findById(userId)
                 .orElseThrow(() -> new BusinessExceptionHandler(ErrorCode.MEMBER_NOT_FOUND));
 
-
         TeamMember newTeamMember = teamMemberManager.joinTeamAsMember(team, member);
-
 
         return TeamConverter.toTeamJoinSuccessResponse(team, member, newTeamMember.getRole());
     }

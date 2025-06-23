@@ -25,4 +25,8 @@ public class TeamMember extends BaseEntity {
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private TeamRole role;
+
+    public void changeRole(TeamRole newRole) {
+        this.role = newRole;
+    }
 }
