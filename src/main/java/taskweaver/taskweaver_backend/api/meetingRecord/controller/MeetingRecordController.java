@@ -52,10 +52,21 @@ public class MeetingRecordController {
 
     @Operation(summary = "회의록 내용 등록/수정")
     @PatchMapping("meeting-records/contents/{meetingId}")
-    public ApiResponse<MeetingRecordResponse.MeetingUpdateContentResponse> updateMeetingRecordTitle(@PathVariable(name = "meetingId") Long meetingId, @RequestBody MeetingRecordRequest.MeetingUpdateContentRequest request, @AuthenticationPrincipal User user) {
+    public ApiResponse<MeetingRecordResponse.MeetingUpdateContentResponse> updateMeetingRecordContent(@PathVariable(name = "meetingId") Long meetingId, @RequestBody MeetingRecordRequest.MeetingUpdateContentRequest request, @AuthenticationPrincipal User user) {
         MeetingRecordResponse.MeetingUpdateContentResponse responseDto = meetingRecordService.updateMeetingRecordContent(
                 meetingId,
                 request
+        );
+
+        return ApiResponse.onSuccess(SuccessCode.UPDATE_SUCCESS, responseDto);
+    }
+
+
+    @Operation(summary = "회의록 내용 삭제")
+    @DeleteMapping("meeting-records/contents/{meetingId}")
+    public ApiResponse<MeetingRecordResponse.MeetingUpdateContentResponse> deleteMeetingRecordContent(@PathVariable(name = "meetingId") Long meetingId, @AuthenticationPrincipal User user) {
+        MeetingRecordResponse.MeetingUpdateContentResponse responseDto = meetingRecordService.deleteMeetingRecordContent(
+                meetingId
         );
 
         return ApiResponse.onSuccess(SuccessCode.UPDATE_SUCCESS, responseDto);

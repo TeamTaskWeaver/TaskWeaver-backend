@@ -60,4 +60,14 @@ public class MeetingRecordService {
         meetingRecordRepository.save(meetingRecord);
         return MeetingRecordConverter.toUpdateContentResponse(meetingRecord);
     }
+
+    @Transactional
+    public MeetingRecordResponse.MeetingUpdateContentResponse deleteMeetingRecordContent(Long meetingId) {
+        MeetingRecord meetingRecord = meetingRecordRepository.findById(meetingId)
+                .orElseThrow(() -> new BusinessExceptionHandler(ErrorCode.MEETING_RECORD_NOT_FOUND));
+        meetingRecord.updateMeetingInfo(null, null);
+
+        meetingRecordRepository.save(meetingRecord);
+        return MeetingRecordConverter.toUpdateContentResponse(meetingRecord);
+    }
 }
