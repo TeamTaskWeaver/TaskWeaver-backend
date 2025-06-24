@@ -141,7 +141,7 @@ public class SignController {
             @CookieValue(name = "refreshToken") String refreshToken, // 쿠키에서 RefreshToken 가져오기
             HttpServletResponse response) {
 
-        // 서비스 레이어에 토큰 재발급 요청
+
         AccessTokenResponse accessTokenResponse = signService.reissueAccessToken(refreshToken, response);
 
         return ApiResponse.onSuccess(SuccessCode.TOKEN_REISSUED, accessTokenResponse);

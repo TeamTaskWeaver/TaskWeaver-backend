@@ -2,6 +2,7 @@ package taskweaver.taskweaver_backend.domain.meetingRecord.model;
 import jakarta.persistence.*;
 import lombok.*;
 import taskweaver.taskweaver_backend.domain.BaseEntity;
+import taskweaver.taskweaver_backend.domain.member.model.Member;
 import taskweaver.taskweaver_backend.domain.project.model.Project;
 
 import java.time.LocalDateTime;
@@ -25,9 +26,10 @@ public class MeetingRecord extends BaseEntity {
     @Column(nullable = false, length = 200)
     private String title;
 
-    private LocalDateTime meetingDate;
-
     @Lob
     private String content;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
+    private Member writer;
 }

@@ -32,20 +32,20 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
                 .csrf(csrf -> csrf.disable())
-                // [핵심] 기본 제공되는 모든 로그인 폼과 인증 방식을 비활성화
+
                 .formLogin(form -> form.disable())
                 .httpBasic(httpBasic -> httpBasic.disable())
-                .oauth2Login(oauth -> oauth.disable()) // OAuth2 자동 로그인 처리 비활성화
+                .oauth2Login(oauth -> oauth.disable())
 
-                // 세션은 사용하지 않으므로 STATELESS로 설정
+
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
-                // 요청 경로별 권한 설정
+
                 .authorizeHttpRequests(requests ->
                         requests.requestMatchers(allowedUrls).permitAll()
                                 .anyRequest().authenticated()
                 )
-                // JWT 필터를 UsernamePasswordAuthenticationFilter 앞에 추가
+
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
