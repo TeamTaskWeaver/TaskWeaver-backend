@@ -14,6 +14,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import taskweaver.taskweaver_backend.api.member.controller.request.AccessTokenResponse;
 import taskweaver.taskweaver_backend.api.member.controller.request.NicknameUpdateRequest;
 import taskweaver.taskweaver_backend.api.member.controller.request.SignInRequest;
 import taskweaver.taskweaver_backend.api.member.controller.request.SignUpRequest;
@@ -132,6 +133,18 @@ public class SignController {
                 .resultMsg(SuccessCode.UPDATE_SUCCESS.getMessage())
                 .build();
         return new ResponseEntity<>(ar, HttpStatus.OK);
+    }
+
+    @Operation(summary = "Access Token 재발급", description = "RefreshToken(쿠키)을 이용하여 새로운 AccessToken을 발급합니다.")
+    @PostMapping("/v1/auth/refresh")
+    public ApiResponse<AccessTokenResponse> reissueAccessToken(
+            @CookieValue(name = "refreshToken") String refreshToken, // 쿠키에서 RefreshToken 가져오기
+            HttpServletResponse response) {
+
+        // 서비스 레이어에 토큰 재발급 요청
+        AccessTokenResponse accessTokenResponse = signService.reissueAccessToken(refreshToken, response);
+
+        return ApiResponse.onSuccess(SuccessCode.TOKEN_REISSUED, accessTokenResponse);
     }
 
 }

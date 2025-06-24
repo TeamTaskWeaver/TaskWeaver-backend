@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import taskweaver.taskweaver_backend.domain.member.model.MemberRefreshToken;
@@ -22,6 +23,7 @@ import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class TokenProvider {
 
     private final JwtProperties jwtProperties;
@@ -92,4 +94,24 @@ public class TokenProvider {
                 Map.class
         ).get("sub").toString();
     }
+
+    public boolean isTokenValid(String token) {
+        try {
+            // 기존에 만들어두신 토큰 검증 메서드를 호출합니다.
+            // 파싱 과정에서 예외가 발생하지 않으면 유효한 토큰입니다.
+            validateAndParseToken(token);
+            return true;
+        } catch (SecurityException | MalformedJwtException e) {
+            log.info("잘못된 JWT 서명입니다.");
+        } catch (ExpiredJwtException e) {
+            log.info("만료된 JWT 토큰입니다.");
+        } catch (UnsupportedJwtException e) {
+            log.info("지원되지 않는 JWT 토큰입니다.");
+        } catch (IllegalArgumentException e) {
+            log.info("JWT 토큰이 잘못되었습니다.");
+        }
+        // 어떤 종류의 예외든 발생하면 유효하지 않은 토큰으로 간주하고 false를 반환합니다.
+        return false;
+    }
+
 }

@@ -4,6 +4,7 @@ package taskweaver.taskweaver_backend.api.member.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -20,6 +21,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
+import taskweaver.taskweaver_backend.api.member.controller.request.AccessTokenResponse;
 import taskweaver.taskweaver_backend.api.member.controller.request.SignInRequest;
 import taskweaver.taskweaver_backend.api.member.controller.request.SignUpRequest;
 import taskweaver.taskweaver_backend.api.member.service.converter.MemberConverter;
@@ -48,7 +50,7 @@ public class SignService {
     private final MemberPlatformRepository memberPlatformRepository; // MemberPlatformRepository 주입 추가
     private final PasswordEncoder encoder;
     private final TokenProvider tokenProvider;
-
+    private final CookieUtil cookieUtil;
 
     @Value("${kakaoApiKey}")
     private String kakaoApiKey;
@@ -228,5 +230,40 @@ public class SignService {
             throw new BusinessExceptionHandler(ErrorCode.KAKAO_PROFILE_PARSE_FAILED);
         }
     }
+
+    public AccessTokenResponse reissueAccessToken(String refreshToken, HttpServletResponse response) {
+        // 1. RefreshToken 검증
+        if (refreshToken == null || !tokenProvider.isTokenValid(refreshToken)) {
+            throw new BusinessExceptionHandler(ErrorCode.INVALID_REFRESH_TOKEN);
+        }
+
+        // 2. DB에 저장된 RefreshToken과 일치하는지 확인
+        MemberRefreshToken memberRefreshToken = memberRefreshTokenRepository.findByRefreshToken(refreshToken)
+                .orElseThrow(() -> new BusinessExceptionHandler(ErrorCode.REFRESH_TOKEN_NOT_FOUND));
+
+        // 3. 토큰에서 사용자 정보 추출
+        Member member = memberRefreshToken.getMember();
+
+        // 4. 새로운 AccessToken 생성
+        String newAccessToken = tokenProvider.createAccessToken(
+                String.format("%s:%s", member.getId(), member.getLoginType())
+        );
+
+        // 5. (보안 강화) Refresh Token Rotation (RTR): 기존 RefreshToken은 무효화하고 새로운 RefreshToken 발급
+        String newRefreshToken = tokenProvider.createRefreshToken();
+        memberRefreshToken.updateRefreshToken(newRefreshToken); // DB에 새 RefreshToken으로 업데이트
+        memberRefreshTokenRepository.save(memberRefreshToken); // 변경된 내용 저장
+
+        // 6. 새로 발급한 RefreshToken을 쿠키에 담아 응답
+        long refreshTokenMaxAgeSeconds = 7 * 24 * 60 * 60; // 예: 7일
+        cookieUtil.createRefreshTokenCookie(response, newRefreshToken, refreshTokenMaxAgeSeconds);
+
+        // 7. 새로운 AccessToken을 DTO에 담아 반환
+        return AccessTokenResponse.builder()
+                .accessToken(newAccessToken)
+                .build();
+    }
+
+
 
 }

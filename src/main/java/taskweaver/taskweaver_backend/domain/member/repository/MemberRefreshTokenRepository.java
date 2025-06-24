@@ -11,5 +11,6 @@ import java.util.Optional;
 public interface MemberRefreshTokenRepository extends JpaRepository<MemberRefreshToken, Long> {
     Optional<MemberRefreshToken> findByMemberIdAndReissueCountLessThan(Long id, Long count);
     Optional<MemberRefreshToken> findByMemberId(Long memberId);
+    Optional<MemberRefreshToken> findByRefreshToken(String refreshToken);
 
 }
