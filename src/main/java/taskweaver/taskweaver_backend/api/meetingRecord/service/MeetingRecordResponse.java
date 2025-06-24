@@ -1,5 +1,6 @@
 package taskweaver.taskweaver_backend.api.meetingRecord.service;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -24,12 +25,21 @@ public class  MeetingRecordResponse {
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class MeetingUpdateResponse {
+    public static class MeetingUpdateTitleResponse {
         Long id;
         String title;
         LocalDateTime modifiedAt;
     }
 
-
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class MeetingUpdateContentResponse {
+        Long id;
+        String subTitle;
+        String content;
+        LocalDateTime modifiedAt;
+    }
 
 }

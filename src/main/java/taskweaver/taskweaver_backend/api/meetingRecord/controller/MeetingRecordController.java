@@ -3,7 +3,6 @@ package taskweaver.taskweaver_backend.api.meetingRecord.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,8 +12,6 @@ import org.springframework.web.bind.annotation.*;
 import taskweaver.taskweaver_backend.api.meetingRecord.controller.request.MeetingRecordRequest;
 import taskweaver.taskweaver_backend.api.meetingRecord.service.MeetingRecordResponse;
 import taskweaver.taskweaver_backend.api.meetingRecord.service.response.MeetingRecordService;
-import taskweaver.taskweaver_backend.api.team.controller.request.TeamRequest;
-import taskweaver.taskweaver_backend.api.team.service.response.TeamResponse;
 import taskweaver.taskweaver_backend.common.code.ApiResponse;
 import taskweaver.taskweaver_backend.common.code.SuccessCode;
 
@@ -42,10 +39,21 @@ public class MeetingRecordController {
                 .body(ApiResponse.onSuccess(SuccessCode.INSERT_SUCCESS, responseDTO));
     }
 
-    @Operation(summary = "회의록 수정")
+    @Operation(summary = "회의록 타이틀 수정")
     @PatchMapping("meeting-records/{meetingId}")
-    public ApiResponse<MeetingRecordResponse.MeetingUpdateResponse> updateMeetingRecord(@PathVariable(name = "meetingId") Long meetingId, @RequestBody MeetingRecordRequest.MeetingUpdateRequest request, @AuthenticationPrincipal User user) {
-        MeetingRecordResponse.MeetingUpdateResponse responseDto = meetingRecordService.updateMeetingRecord(
+    public ApiResponse<MeetingRecordResponse.MeetingUpdateTitleResponse> updateMeetingRecordTitle(@PathVariable(name = "meetingId") Long meetingId, @RequestBody MeetingRecordRequest.MeetingUpdateTitleRequest request, @AuthenticationPrincipal User user) {
+        MeetingRecordResponse.MeetingUpdateTitleResponse responseDto = meetingRecordService.updateMeetingRecordTitle(
+                meetingId,
+                request
+        );
+
+        return ApiResponse.onSuccess(SuccessCode.UPDATE_SUCCESS, responseDto);
+    }
+
+    @Operation(summary = "회의록 내용 등록/수정")
+    @PatchMapping("meeting-records/contents/{meetingId}")
+    public ApiResponse<MeetingRecordResponse.MeetingUpdateContentResponse> updateMeetingRecordTitle(@PathVariable(name = "meetingId") Long meetingId, @RequestBody MeetingRecordRequest.MeetingUpdateContentRequest request, @AuthenticationPrincipal User user) {
+        MeetingRecordResponse.MeetingUpdateContentResponse responseDto = meetingRecordService.updateMeetingRecordContent(
                 meetingId,
                 request
         );

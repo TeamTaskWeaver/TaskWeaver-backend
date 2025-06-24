@@ -41,13 +41,23 @@ public class MeetingRecordService {
     }
 
     @Transactional
-    public MeetingRecordResponse.MeetingUpdateResponse updateMeetingRecord(Long meetingId, MeetingRecordRequest.MeetingUpdateRequest request) {
+    public MeetingRecordResponse.MeetingUpdateTitleResponse updateMeetingRecordTitle(Long meetingId, MeetingRecordRequest.MeetingUpdateTitleRequest request) {
         MeetingRecord meetingRecord = meetingRecordRepository.findById(meetingId)
                         .orElseThrow(() -> new BusinessExceptionHandler(ErrorCode.MEETING_RECORD_NOT_FOUND));
-        meetingRecord.updateMeetingInfo(request.getTitle());
+        meetingRecord.updateMeetingTitle(request.getTitle());
 
         meetingRecordRepository.save(meetingRecord);
-        return MeetingRecordConverter.toUpdateResponse(meetingRecord);
+        return MeetingRecordConverter.toUpdateTitleResponse(meetingRecord);
 
+    }
+
+    @Transactional
+    public MeetingRecordResponse.MeetingUpdateContentResponse updateMeetingRecordContent(Long meetingId, MeetingRecordRequest.MeetingUpdateContentRequest request) {
+        MeetingRecord meetingRecord = meetingRecordRepository.findById(meetingId)
+                .orElseThrow(() -> new BusinessExceptionHandler(ErrorCode.MEETING_RECORD_NOT_FOUND));
+        meetingRecord.updateMeetingInfo(request.getSubTitle(), request.getContent());
+
+        meetingRecordRepository.save(meetingRecord);
+        return MeetingRecordConverter.toUpdateContentResponse(meetingRecord);
     }
 }

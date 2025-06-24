@@ -14,8 +14,17 @@ public class MeetingRecordRequest {
     }
 
     @Getter
-    public static class MeetingUpdateRequest {
+    public static class MeetingUpdateTitleRequest {
         @Schema(description = "회의록 제목", example = "Meeting Name")
         String title;
+    }
+
+    @Getter
+    public static class MeetingUpdateContentRequest {
+        @Schema(description = "회의록 내용의 제목", example = "Meeting Name")
+        String subTitle;
+
+        @Schema(description = "회의록 내용", example = "Meeting Content")
+        String content;
     }
 }

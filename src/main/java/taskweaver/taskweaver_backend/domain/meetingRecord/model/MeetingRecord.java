@@ -5,8 +5,6 @@ import taskweaver.taskweaver_backend.domain.BaseEntity;
 import taskweaver.taskweaver_backend.domain.member.model.Member;
 import taskweaver.taskweaver_backend.domain.project.model.Project;
 
-import java.time.LocalDateTime;
-
 
 @Entity
 @Getter
@@ -26,6 +24,9 @@ public class MeetingRecord extends BaseEntity {
     @Column(nullable = false, length = 200)
     private String title;
 
+    @Column(length = 200)
+    private String subTitle;
+
     @Lob
     private String content;
 
@@ -33,7 +34,12 @@ public class MeetingRecord extends BaseEntity {
     @JoinColumn(name = "member_id")
     private Member writer;
 
-    public void updateMeetingInfo(String title) {
+    public void updateMeetingTitle(String title) {
         this.title = title;
+    }
+
+    public void updateMeetingInfo(String subTitle, String content) {
+        this.subTitle = subTitle;
+        this.content = content;
     }
 }
