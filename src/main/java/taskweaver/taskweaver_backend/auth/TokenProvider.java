@@ -28,7 +28,6 @@ public class TokenProvider {
     private final MemberRefreshTokenRepository memberRefreshTokenRepository;
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    // 토큰 생성 메서드
     public String createAccessToken(String userSpecification) {
         return Jwts.builder()
                 .signWith(new SecretKeySpec(jwtProperties.getSecretKey().getBytes(), SignatureAlgorithm.HS512.getJcaName()))
@@ -39,7 +38,6 @@ public class TokenProvider {
                 .compact();
     }
 
-    // 비밀키를 토대로 createToken()에서 토큰에 담은 Subject를 복호화하여 문자열 형태로 반환하는 메소드
     public String validateTokenAndGetSubject(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(jwtProperties.getSecretKey().getBytes())
