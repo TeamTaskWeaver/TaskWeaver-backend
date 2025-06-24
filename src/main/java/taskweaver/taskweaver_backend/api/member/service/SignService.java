@@ -12,6 +12,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
@@ -25,6 +26,7 @@ import taskweaver.taskweaver_backend.api.member.service.converter.MemberConverte
 import taskweaver.taskweaver_backend.api.member.service.response.OauthSignUpResponse;
 import taskweaver.taskweaver_backend.api.member.service.response.SignInResponse;
 import taskweaver.taskweaver_backend.api.member.service.response.SignUpResponse;
+import taskweaver.taskweaver_backend.auth.CookieUtil;
 import taskweaver.taskweaver_backend.auth.TokenProvider;
 import taskweaver.taskweaver_backend.common.code.ErrorCode;
 import taskweaver.taskweaver_backend.common.exception.handler.BusinessExceptionHandler;
@@ -35,6 +37,7 @@ import taskweaver.taskweaver_backend.domain.member.repository.MemberPlatformRepo
 import taskweaver.taskweaver_backend.domain.member.repository.MemberRefreshTokenRepository;
 import taskweaver.taskweaver_backend.domain.member.repository.MemberRepository;
 
+import java.util.Map;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -46,13 +49,14 @@ public class SignService {
     private final PasswordEncoder encoder;
     private final TokenProvider tokenProvider;
 
+
     @Value("${kakaoApiKey}")
     private String kakaoApiKey;
 
     @Value("${kakaoRedirectUrl}")
     private String redirectURI;
 
-    // 회원가입
+
     @Transactional
     public SignUpResponse registerMember(SignUpRequest request) {
         // 임시 비밀번호 패턴 체크
@@ -81,8 +85,7 @@ public class SignService {
         );
         String refreshToken = tokenProvider.createRefreshToken();
 
-        // memberRefreshTokenRepository.findById(member.getId()) // 변경 전: MemberRefreshToken의 PK로 조회
-        memberRefreshTokenRepository.findByMemberId(member.getId()) // 변경 후: member_id (Foreign Key)로 조회
+        memberRefreshTokenRepository.findByMemberId(member.getId())
                 .ifPresentOrElse(
                         it -> it.updateRefreshToken(refreshToken),
                         () -> memberRefreshTokenRepository.save(new MemberRefreshToken(member, refreshToken))
@@ -91,9 +94,8 @@ public class SignService {
         return MemberConverter.toSignInResponse(member, accessToken, refreshToken);
     }
 
-    // 카카오 OAuth 토큰 발급 및 서비스 로그인/회원가입 처리
-    @Transactional // DB 저장 로직이 포함되므로 @Transactional 추가
-    public SignInResponse getKakaoAccessToken(String code) { // 반환 타입을 SignInResponse로 변경
+    @Transactional
+    public SignInResponse getKakaoAccessToken(String code) {
         RestTemplate rt = new RestTemplate();
 
         HttpHeaders headers = new HttpHeaders();
@@ -102,7 +104,7 @@ public class SignService {
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("grant_type", "authorization_code");
         params.add("client_id", kakaoApiKey);
-        params.add("redirect_uri", redirectURI);
+        params.add("redirect_uri", "http://localhost:3000/login/callback");
         params.add("code", code);
 
         HttpEntity<MultiValueMap<String, String>> kakaoTokenRequest =
@@ -117,12 +119,12 @@ public class SignService {
                     String.class
             );
         } catch (HttpClientErrorException e) {
-            // 4xx 클라이언트 오류 (예: 400 Bad Request - KOE320, KOE303 등)
-            throw new RuntimeException(e); // BusinessExceptionHandler 제거
+            throw new RuntimeException(e);
         } catch (RestClientException e) {
-            // 네트워크 연결 문제 등 RestTemplate 자체 오류
-            throw new RuntimeException(e); // BusinessExceptionHandler 제거
+            throw new RuntimeException(e);
         }
+
+        System.out.println("카카오가 응답: " + accessTokenResponse.getBody());
 
 
         ObjectMapper objectMapper = new ObjectMapper();
@@ -133,40 +135,29 @@ public class SignService {
             throw new BusinessExceptionHandler(ErrorCode.KAKAO_TOKEN_PARSE_FAILED);
         }
 
-        // 카카오 프로필 조회
-        KakaoProfile kakaoProfile = findKakaoProfile(oauthToken.getAccess_token());
+        KakaoProfile kakaoProfile = findKakaoProfile(oauthToken.getAccessToken());
 
-        // kakaoProfile.getId()는 카카오 사용자의 고유 ID입니다.
-        String providerId = String.valueOf(kakaoProfile.getId()); // providerId는 String이므로 변환
+        String providerId = String.valueOf(kakaoProfile.getId());
 
         Member member;
-        // 1. MemberPlatform으로 기존 회원 조회
-        // ProviderType.KAKAO와 providerId를 사용하여 MemberPlatform을 찾습니다.
         MemberPlatform memberPlatform = memberPlatformRepository
                 .findByProviderAndProviderId(ProviderType.KAKAO, providerId)
                 .orElse(null);
 
         if (memberPlatform == null) {
-            // 2. 신규 회원인 경우 (MemberPlatform이 없는 경우)
-            // 새로운 Member 생성 후 MemberPlatform도 생성하여 연결합니다.
-
-            // Member 엔티티의 email과 nickname이 nullable=false 이므로 임시 값 설정
-            // 이메일은 카카오ID 기반으로 임시 생성하거나, 정책에 따라 비워둘 수 있습니다.
-            // 닉네임은 추후 사용자에게 입력받을 예정이므로 임시 값을 설정합니다.
             String temporaryEmail = "kakao_" + providerId + "@example.com"; // 임시 이메일
-            String temporaryPassword = encoder.encode(UUID.randomUUID().toString()); // 안전한 임시 패스워드 생성
+            String temporaryPassword = encoder.encode(UUID.randomUUID().toString());
             String temporaryNickname = "카카오사용자_" + providerId.substring(0, Math.min(6, providerId.length())); // 임시 닉네임
 
-            // Member 엔티티 생성
             member = Member.builder()
                     .email(temporaryEmail)
                     .password(temporaryPassword)
-                    .nickname(temporaryNickname) // 임시 닉네임 설정
+                    .nickname(temporaryNickname)
                     .loginType(LoginType.KAKAO)
                     .build();
-            member = memberRepository.save(member); // Member 저장
+            member = memberRepository.save(member);
 
-            // MemberPlatform 엔티티 생성 및 연결
+
             memberPlatform = MemberPlatform.builder()
                     .member(member)
                     .provider(ProviderType.KAKAO)
@@ -182,24 +173,25 @@ public class SignService {
 
         final Member finalMember = member;
 
-        // 4. 로그인 처리 및 JWT 토큰 발급
+
         String accessToken = tokenProvider.createAccessToken(
                 String.format("%s:%s", finalMember.getId(), finalMember.getLoginType())
         );
         String refreshToken = tokenProvider.createRefreshToken();
 
-        // memberRefreshTokenRepository.findById(finalMember.getId()) // 변경 전: MemberRefreshToken의 PK로 조회
-        memberRefreshTokenRepository.findByMemberId(finalMember.getId()) // 변경 후: member_id (Foreign Key)로 조회
+
+        memberRefreshTokenRepository.findByMemberId(finalMember.getId())
                 .ifPresentOrElse(
                         it -> it.updateRefreshToken(refreshToken),
                         () -> memberRefreshTokenRepository.save(new MemberRefreshToken(finalMember, refreshToken))
                 );
 
-        // JWT 토큰이 포함된 SignInResponse 반환
+
+
         return MemberConverter.toSignInResponse(finalMember, accessToken, refreshToken);
     }
 
-    // 카카오 프로필 조회
+
     public KakaoProfile findKakaoProfile(String token) {
         RestTemplate rt = new RestTemplate();
 
@@ -236,4 +228,5 @@ public class SignService {
             throw new BusinessExceptionHandler(ErrorCode.KAKAO_PROFILE_PARSE_FAILED);
         }
     }
+
 }
