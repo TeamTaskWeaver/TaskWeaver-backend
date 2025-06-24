@@ -1,0 +1,85 @@
+package taskweaver.taskweaver_backend.api.meetingRecord.controller;
+
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.web.bind.annotation.*;
+import taskweaver.taskweaver_backend.api.meetingRecord.controller.request.MeetingRecordRequest;
+import taskweaver.taskweaver_backend.api.meetingRecord.service.response.MeetingRecordResponse;
+import taskweaver.taskweaver_backend.api.meetingRecord.service.MeetingRecordService;
+import taskweaver.taskweaver_backend.common.code.ApiResponse;
+import taskweaver.taskweaver_backend.common.code.SuccessCode;
+
+@Tag(name = "회의록 관련 API")
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("/v1") // 기본 경로를 /v1으로 변경
+public class MeetingRecordController {
+
+    private final MeetingRecordService meetingRecordService;
+
+    @Operation(summary = "특정 프로젝트에 회의록 생성")
+    @PostMapping("/projects/{projectId}/meeting-records") // URL 경로 변경
+    public ResponseEntity<ApiResponse<MeetingRecordResponse.MeetingCreateResponse>> createMeetingRecord(
+            @PathVariable Long projectId, // URL 경로에서 projectId를 파라미터로 받음
+            @RequestBody MeetingRecordRequest.MeetingCreateRequest request,
+            @AuthenticationPrincipal User user
+    ) {
+        // 서비스 호출 시 projectId를 직접 전달
+        MeetingRecordResponse.MeetingCreateResponse responseDTO =
+                meetingRecordService.createMeetingRecord(projectId, request, Long.parseLong(user.getUsername()));
+
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(ApiResponse.onSuccess(SuccessCode.INSERT_SUCCESS, responseDTO));
+    }
+
+    @Operation(summary = "회의록 타이틀 수정")
+    @PatchMapping("meeting-records/{meetingId}")
+    public ApiResponse<MeetingRecordResponse.MeetingUpdateTitleResponse> updateMeetingRecordTitle(@PathVariable(name = "meetingId") Long meetingId, @RequestBody MeetingRecordRequest.MeetingUpdateTitleRequest request, @AuthenticationPrincipal User user) {
+        MeetingRecordResponse.MeetingUpdateTitleResponse responseDto = meetingRecordService.updateMeetingRecordTitle(
+                meetingId,
+                request
+        );
+
+        return ApiResponse.onSuccess(SuccessCode.UPDATE_SUCCESS, responseDto);
+    }
+
+    @Operation(summary = "회의록 내용 등록/수정")
+    @PatchMapping("meeting-records/contents/{meetingId}")
+    public ApiResponse<MeetingRecordResponse.MeetingUpdateContentResponse> updateMeetingRecordContent(@PathVariable(name = "meetingId") Long meetingId, @RequestBody MeetingRecordRequest.MeetingUpdateContentRequest request, @AuthenticationPrincipal User user) {
+        MeetingRecordResponse.MeetingUpdateContentResponse responseDto = meetingRecordService.updateMeetingRecordContent(
+                meetingId,
+                request
+        );
+
+        return ApiResponse.onSuccess(SuccessCode.UPDATE_SUCCESS, responseDto);
+    }
+
+
+    @Operation(summary = "회의록 내용 삭제")
+    @DeleteMapping("meeting-records/contents/{meetingId}")
+    public ApiResponse<MeetingRecordResponse.MeetingUpdateContentResponse> deleteMeetingRecordContent(
+            @PathVariable(name = "meetingId") Long meetingId,
+            @AuthenticationPrincipal User user) {
+        MeetingRecordResponse.MeetingUpdateContentResponse responseDto = meetingRecordService.deleteMeetingRecordContent(
+                meetingId
+        );
+
+        return ApiResponse.onSuccess(SuccessCode.UPDATE_SUCCESS, responseDto);
+    }
+
+    @GetMapping("meeting-records/{meetingId}")
+    public ApiResponse<MeetingRecordResponse.MeetingDetailsResponse> getMeetingDetails(
+            @PathVariable Long meetingId,
+            @AuthenticationPrincipal User user) {
+
+        MeetingRecordResponse.MeetingDetailsResponse responseDTO = meetingRecordService.getMeetingDetails(meetingId);
+        return ApiResponse.onSuccess(SuccessCode.SELECT_SUCCESS, responseDTO);
+    }
+}

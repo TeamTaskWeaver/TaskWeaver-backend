@@ -19,5 +19,5 @@ public class Agenda extends BaseEntity {
     private MeetingRecord meeting;
 
     @Column(nullable = false, length = 225)
-    private String content;
+    private String title;
 }
