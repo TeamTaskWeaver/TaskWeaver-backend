@@ -10,8 +10,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
 import taskweaver.taskweaver_backend.api.meetingRecord.controller.request.MeetingRecordRequest;
-import taskweaver.taskweaver_backend.api.meetingRecord.service.MeetingRecordResponse;
-import taskweaver.taskweaver_backend.api.meetingRecord.service.response.MeetingRecordService;
+import taskweaver.taskweaver_backend.api.meetingRecord.service.response.MeetingRecordResponse;
+import taskweaver.taskweaver_backend.api.meetingRecord.service.MeetingRecordService;
 import taskweaver.taskweaver_backend.common.code.ApiResponse;
 import taskweaver.taskweaver_backend.common.code.SuccessCode;
 

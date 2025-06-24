@@ -1,4 +1,4 @@
-package taskweaver.taskweaver_backend.api.meetingRecord.service;
+package taskweaver.taskweaver_backend.api.meetingRecord.service.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;

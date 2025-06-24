@@ -1,10 +1,10 @@
-package taskweaver.taskweaver_backend.api.meetingRecord.service.response;
+package taskweaver.taskweaver_backend.api.meetingRecord.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import taskweaver.taskweaver_backend.api.meetingRecord.controller.request.MeetingRecordRequest;
-import taskweaver.taskweaver_backend.api.meetingRecord.service.MeetingRecordResponse;
+import taskweaver.taskweaver_backend.api.meetingRecord.service.response.MeetingRecordResponse;
 import taskweaver.taskweaver_backend.api.meetingRecord.service.converter.MeetingRecordConverter;
 import taskweaver.taskweaver_backend.common.code.ErrorCode;
 import taskweaver.taskweaver_backend.common.exception.handler.BusinessExceptionHandler;
