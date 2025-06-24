@@ -12,4 +12,10 @@ public class MeetingRecordRequest {
         @Schema(description = "회의록 제목", example = "Meeting Name")
         String title;
     }
+
+    @Getter
+    public static class MeetingUpdateRequest {
+        @Schema(description = "회의록 제목", example = "Meeting Name")
+        String title;
+    }
 }

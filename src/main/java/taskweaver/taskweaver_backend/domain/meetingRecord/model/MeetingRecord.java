@@ -32,4 +32,8 @@ public class MeetingRecord extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member writer;
+
+    public void updateMeetingInfo(String title) {
+        this.title = title;
+    }
 }

@@ -37,7 +37,17 @@ public class MeetingRecordService {
 
         meetingRecordRepository.save(newMeetingRecord);
 
-        // 4. Converter를 사용하여 생성 결과를 DTO로 변환하여 반환
         return MeetingRecordConverter.toCreateResponse(newMeetingRecord, member);
+    }
+
+    @Transactional
+    public MeetingRecordResponse.MeetingUpdateResponse updateMeetingRecord(Long meetingId, MeetingRecordRequest.MeetingUpdateRequest request) {
+        MeetingRecord meetingRecord = meetingRecordRepository.findById(meetingId)
+                        .orElseThrow(() -> new BusinessExceptionHandler(ErrorCode.MEETING_RECORD_NOT_FOUND));
+        meetingRecord.updateMeetingInfo(request.getTitle());
+
+        meetingRecordRepository.save(meetingRecord);
+        return MeetingRecordConverter.toUpdateResponse(meetingRecord);
+
     }
 }

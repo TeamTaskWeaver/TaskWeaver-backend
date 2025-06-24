@@ -132,6 +132,7 @@ public enum ErrorCode {
     NOT_ALLOWED_PASSWORD(401, "M0010", "This password is not allowed."),
 
 
+    MEETING_RECORD_NOT_FOUND(404, "MR001", "해당 회의록을 찾을 수 없습니다."),
     // COMENT
     COMMENT_NOT_FOUND(404, "C001", "Comment Not Found"),
     COMMENT_DEPTH_EXCEED(404, "C002", "Comment Depth is Exceeded."),

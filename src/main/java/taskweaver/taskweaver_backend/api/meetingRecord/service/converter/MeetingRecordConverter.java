@@ -30,4 +30,12 @@ public class MeetingRecordConverter {
                 meetingRecord.getCreatedAt()
         );
     }
+
+    public static MeetingRecordResponse.MeetingUpdateResponse toUpdateResponse(MeetingRecord meetingRecord) {
+        return new MeetingRecordResponse.MeetingUpdateResponse(
+                meetingRecord.getId(),
+                meetingRecord.getTitle(),
+                meetingRecord.getModifiedAt()
+        );
+    }
 }

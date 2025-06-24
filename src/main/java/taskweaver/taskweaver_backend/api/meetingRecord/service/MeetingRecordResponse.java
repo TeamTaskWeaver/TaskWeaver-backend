@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
-public class MeetingRecordResponse {
+public class  MeetingRecordResponse {
     @Builder
     @Getter
     @NoArgsConstructor
@@ -18,4 +18,18 @@ public class MeetingRecordResponse {
         String title;
         LocalDateTime createdAt;
     }
+
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class MeetingUpdateResponse {
+        Long id;
+        String title;
+        LocalDateTime modifiedAt;
+    }
+
+
+
 }

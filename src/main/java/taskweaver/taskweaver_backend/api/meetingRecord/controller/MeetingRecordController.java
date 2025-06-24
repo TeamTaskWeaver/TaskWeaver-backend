@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.*;
 import taskweaver.taskweaver_backend.api.meetingRecord.controller.request.MeetingRecordRequest;
 import taskweaver.taskweaver_backend.api.meetingRecord.service.MeetingRecordResponse;
 import taskweaver.taskweaver_backend.api.meetingRecord.service.response.MeetingRecordService;
+import taskweaver.taskweaver_backend.api.team.controller.request.TeamRequest;
+import taskweaver.taskweaver_backend.api.team.service.response.TeamResponse;
 import taskweaver.taskweaver_backend.common.code.ApiResponse;
 import taskweaver.taskweaver_backend.common.code.SuccessCode;
 
@@ -24,7 +26,7 @@ public class MeetingRecordController {
 
     private final MeetingRecordService meetingRecordService;
 
-    @Operation(summary = "특정 프로젝트에 회의록 생성", description = "URL 경로에 명시된 프로젝트에 새로운 회의록을 생성합니다.")
+    @Operation(summary = "특정 프로젝트에 회의록 생성")
     @PostMapping("/projects/{projectId}/meeting-records") // URL 경로 변경
     public ResponseEntity<ApiResponse<MeetingRecordResponse.MeetingCreateResponse>> createMeetingRecord(
             @PathVariable Long projectId, // URL 경로에서 projectId를 파라미터로 받음
@@ -38,5 +40,16 @@ public class MeetingRecordController {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(ApiResponse.onSuccess(SuccessCode.INSERT_SUCCESS, responseDTO));
+    }
+
+    @Operation(summary = "회의록 수정")
+    @PatchMapping("meeting-records/{meetingId}")
+    public ApiResponse<MeetingRecordResponse.MeetingUpdateResponse> updateMeetingRecord(@PathVariable(name = "meetingId") Long meetingId, @RequestBody MeetingRecordRequest.MeetingUpdateRequest request, @AuthenticationPrincipal User user) {
+        MeetingRecordResponse.MeetingUpdateResponse responseDto = meetingRecordService.updateMeetingRecord(
+                meetingId,
+                request
+        );
+
+        return ApiResponse.onSuccess(SuccessCode.UPDATE_SUCCESS, responseDto);
     }
 }
