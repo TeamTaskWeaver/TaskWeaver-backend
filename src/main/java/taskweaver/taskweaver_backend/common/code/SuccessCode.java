@@ -16,6 +16,7 @@ public enum SuccessCode {
     INSERT_SUCCESS(201, "201", "INSERT SUCCESS"),
     // 수정 성공 코드 (HTTP Response: 201 Created)
     UPDATE_SUCCESS(200, "200", "UPDATE SUCCESS"),
+    TOKEN_REISSUED(200, "200", "TOKEN REISSUED SUCCESS"),
 
     ; // End
 

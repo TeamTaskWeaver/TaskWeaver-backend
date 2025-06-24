@@ -24,6 +24,7 @@ public class SecurityConfig {
     private final String[] allowedUrls = {
             "/", "/swagger-ui/**", "/v3/**",
             "/v1/auth/sign-in",
+            "/v1/auth/refresh",
             "/v1/auth/kakao" // 카카오 콜백 경로는 인증 없이 접근 허용
     };
 

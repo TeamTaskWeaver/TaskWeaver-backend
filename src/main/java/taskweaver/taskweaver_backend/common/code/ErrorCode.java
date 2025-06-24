@@ -1,6 +1,7 @@
 package taskweaver.taskweaver_backend.common.code;
 
 import lombok.Getter;
+import org.springframework.http.HttpStatus;
 
 @Getter
 public enum ErrorCode {
@@ -65,14 +66,15 @@ public enum ErrorCode {
     
     // 지원하지 않는 JWT 토큰일 때 발생
     UNSUPPORTED_JWT_TOKEN(400,"G017", "The provided JWT token is not supported"),
-
+    EXPIRED_REFRESH_TOKEN(400, "A005", "만료된 Refresh Token입니다."),
+    REFRESH_TOKEN_NOT_FOUND(400, "A006", "DB에 Refresh Token이 없습니다."),
     // 토큰이 없을 때 발생
     TOKEN_MISSING_ERROR(401, "G018", "Token is missing."),
 
     // 이미 로그아웃된 회원의 토큰일 때
     MEMBER_LOGGED_OUT(401, "G019", "User has already logged out."),
     FORBIDDEN_ACCESS(403, "C005", "접근 권한이 없습니다."),
-
+    INVALID_REFRESH_TOKEN(400, "A004", "유효하지 않은 Refresh Token입니다."),
     /**
      * ******************************* Custom Error CodeList ***************************************
      */
