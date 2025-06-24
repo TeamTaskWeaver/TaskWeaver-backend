@@ -64,11 +64,22 @@ public class MeetingRecordController {
 
     @Operation(summary = "회의록 내용 삭제")
     @DeleteMapping("meeting-records/contents/{meetingId}")
-    public ApiResponse<MeetingRecordResponse.MeetingUpdateContentResponse> deleteMeetingRecordContent(@PathVariable(name = "meetingId") Long meetingId, @AuthenticationPrincipal User user) {
+    public ApiResponse<MeetingRecordResponse.MeetingUpdateContentResponse> deleteMeetingRecordContent(
+            @PathVariable(name = "meetingId") Long meetingId,
+            @AuthenticationPrincipal User user) {
         MeetingRecordResponse.MeetingUpdateContentResponse responseDto = meetingRecordService.deleteMeetingRecordContent(
                 meetingId
         );
 
         return ApiResponse.onSuccess(SuccessCode.UPDATE_SUCCESS, responseDto);
+    }
+
+    @GetMapping("meeting-records/{meetingId}")
+    public ApiResponse<MeetingRecordResponse.MeetingDetailsResponse> getMeetingDetails(
+            @PathVariable Long meetingId,
+            @AuthenticationPrincipal User user) {
+
+        MeetingRecordResponse.MeetingDetailsResponse responseDTO = meetingRecordService.getMeetingDetails(meetingId);
+        return ApiResponse.onSuccess(SuccessCode.SELECT_SUCCESS, responseDTO);
     }
 }

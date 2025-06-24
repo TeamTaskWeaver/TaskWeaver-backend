@@ -5,6 +5,10 @@ import taskweaver.taskweaver_backend.domain.BaseEntity;
 import taskweaver.taskweaver_backend.domain.member.model.Member;
 import taskweaver.taskweaver_backend.domain.project.model.Project;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 
 @Entity
 @Getter
@@ -34,6 +38,9 @@ public class MeetingRecord extends BaseEntity {
     @JoinColumn(name = "member_id")
     private Member writer;
 
+    @OneToMany(mappedBy = "meeting", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Agenda> agendas = new ArrayList<>();
+
     public void updateMeetingTitle(String title) {
         this.title = title;
     }
@@ -42,4 +49,5 @@ public class MeetingRecord extends BaseEntity {
         this.subTitle = subTitle;
         this.content = content;
     }
+
 }

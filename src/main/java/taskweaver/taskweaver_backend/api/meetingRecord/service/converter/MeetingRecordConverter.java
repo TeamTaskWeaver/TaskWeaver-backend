@@ -7,6 +7,8 @@ import taskweaver.taskweaver_backend.domain.meetingRecord.model.MeetingRecord;
 import taskweaver.taskweaver_backend.domain.member.model.Member;
 import taskweaver.taskweaver_backend.domain.project.model.Project;
 
+import java.util.List;
+
 @Component
 public class MeetingRecordConverter {
     public static MeetingRecord toMeetingRequest(MeetingRecordRequest.MeetingCreateRequest request, Member writer, Project project) {
@@ -41,5 +43,25 @@ public class MeetingRecordConverter {
                 meetingRecord.getContent(),
                 meetingRecord.getModifiedAt()
         );
+    }
+
+
+    public static MeetingRecordResponse.MeetingDetailsResponse toGetMeetingDetailsResponse(MeetingRecord meeting) {
+        // Agenda 엔티티 리스트를 AgendaInfo DTO 리스트로 변환
+        List<MeetingRecordResponse.AgendaInfo> agendaInfos = meeting.getAgendas().stream()
+                .map(agenda -> MeetingRecordResponse.AgendaInfo.builder()
+                        .agendaId(agenda.getId())
+                        .title(agenda.getTitle())
+                        .build())
+                .toList();
+
+        return MeetingRecordResponse.MeetingDetailsResponse.builder()
+                .meetingId(meeting.getId())
+                .title(meeting.getTitle())
+                .subTitle(meeting.getSubTitle())
+                .content(meeting.getContent())
+                .createdAt(meeting.getCreatedAt())
+                .agendas(agendaInfos)
+                .build();
     }
 }

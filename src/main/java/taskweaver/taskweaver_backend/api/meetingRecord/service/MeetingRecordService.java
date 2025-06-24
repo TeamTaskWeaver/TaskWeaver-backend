@@ -70,4 +70,13 @@ public class MeetingRecordService {
         meetingRecordRepository.save(meetingRecord);
         return MeetingRecordConverter.toUpdateContentResponse(meetingRecord);
     }
+
+    public MeetingRecordResponse.MeetingDetailsResponse getMeetingDetails(Long meetingId) {
+
+        MeetingRecord meeting = meetingRecordRepository.findMeetingWithAgendasById(meetingId)
+                .orElseThrow(() -> new BusinessExceptionHandler(ErrorCode.MEETING_RECORD_NOT_FOUND));
+
+
+        return MeetingRecordConverter.toGetMeetingDetailsResponse(meeting);
+    }
 }

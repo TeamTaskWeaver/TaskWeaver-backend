@@ -25,7 +25,6 @@ public class AgendaService {
         MeetingRecord meeting = meetingRepository.findById(meetingId)
                 .orElseThrow(() -> new BusinessExceptionHandler(ErrorCode.MEETING_RECORD_NOT_FOUND));
 
-
         Agenda newAgenda = AgendaConverter.toCreateAgendaRequest(request, meeting);
         agendaRepository.save(newAgenda);
 
@@ -39,4 +38,6 @@ public class AgendaService {
 
         agendaRepository.delete(agenda);
     }
+
+
 }
