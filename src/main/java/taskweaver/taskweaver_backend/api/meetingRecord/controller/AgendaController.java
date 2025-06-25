@@ -38,6 +38,6 @@ public class AgendaController {
             @AuthenticationPrincipal User user) {
 
         agendaService.deleteAgenda(agendaId);
-        return ApiResponse.onSuccess(SuccessCode.DELETE_SUCCESS, null);
+        return ApiResponse.onSuccess(SuccessCode.DELETE_SUCCESS);
     }
 }
