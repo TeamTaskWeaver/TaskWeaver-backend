@@ -34,7 +34,7 @@ public class AgendaService {
     @Transactional
     public void deleteAgenda(Long agendaId) {
         Agenda agenda = agendaRepository.findById(agendaId)
-                .orElseThrow(() -> new BusinessExceptionHandler(ErrorCode.AGENDA_NOT_FOUND)); // ErrorCode에 추가 필요
+                .orElseThrow(() -> new BusinessExceptionHandler(ErrorCode.AGENDA_NOT_FOUND));
 
         agendaRepository.delete(agenda);
     }

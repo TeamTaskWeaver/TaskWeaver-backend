@@ -39,7 +39,6 @@ public class RetrospectiveService {
                 .orElseThrow(() -> new BusinessExceptionHandler(ErrorCode.PROJECT_NOT_FOUND));
 
         Retrospective retrospective = RetrospectiveConverter.toRetrospectiveRequest(request, member, project);
-
         retrospectiveRepository.save(retrospective);
 
         return RetrospectiveConverter.toCreateResponse(retrospective, member);

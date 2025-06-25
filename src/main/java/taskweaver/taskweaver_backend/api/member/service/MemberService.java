@@ -16,7 +16,6 @@ public class MemberService {
 
     @Transactional
     public Member updateNickname(Long memberId, String newNickname) {
-        // 1. memberId로 회원을 찾습니다.
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new BusinessExceptionHandler(ErrorCode.MEMBER_NOT_FOUND));
 

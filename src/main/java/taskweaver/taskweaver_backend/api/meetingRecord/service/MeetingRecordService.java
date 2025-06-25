@@ -42,8 +42,7 @@ public class MeetingRecordService {
 
     @Transactional
     public MeetingRecordResponse.MeetingUpdateTitleResponse updateMeetingRecordTitle(Long meetingId, MeetingRecordRequest.MeetingUpdateTitleRequest request) {
-        MeetingRecord meetingRecord = meetingRecordRepository.findById(meetingId)
-                        .orElseThrow(() -> new BusinessExceptionHandler(ErrorCode.MEETING_RECORD_NOT_FOUND));
+        MeetingRecord meetingRecord = findMeetingRecordById(meetingId);
         meetingRecord.updateMeetingTitle(request.getTitle());
 
         meetingRecordRepository.save(meetingRecord);
@@ -53,8 +52,7 @@ public class MeetingRecordService {
 
     @Transactional
     public MeetingRecordResponse.MeetingUpdateContentResponse updateMeetingRecordContent(Long meetingId, MeetingRecordRequest.MeetingUpdateContentRequest request) {
-        MeetingRecord meetingRecord = meetingRecordRepository.findById(meetingId)
-                .orElseThrow(() -> new BusinessExceptionHandler(ErrorCode.MEETING_RECORD_NOT_FOUND));
+        MeetingRecord meetingRecord = findMeetingRecordById(meetingId);
         meetingRecord.updateMeetingInfo(request.getSubTitle(), request.getContent());
 
         meetingRecordRepository.save(meetingRecord);
@@ -63,8 +61,7 @@ public class MeetingRecordService {
 
     @Transactional
     public MeetingRecordResponse.MeetingUpdateContentResponse deleteMeetingRecordContent(Long meetingId) {
-        MeetingRecord meetingRecord = meetingRecordRepository.findById(meetingId)
-                .orElseThrow(() -> new BusinessExceptionHandler(ErrorCode.MEETING_RECORD_NOT_FOUND));
+        MeetingRecord meetingRecord = findMeetingRecordById(meetingId);
         meetingRecord.updateMeetingInfo(null, null);
 
         meetingRecordRepository.save(meetingRecord);
@@ -78,5 +75,10 @@ public class MeetingRecordService {
 
 
         return MeetingRecordConverter.toGetMeetingDetailsResponse(meeting);
+    }
+
+    private MeetingRecord findMeetingRecordById(Long meetingId) {
+        return meetingRecordRepository.findById(meetingId)
+                .orElseThrow(() -> new BusinessExceptionHandler(ErrorCode.MEETING_RECORD_NOT_FOUND));
     }
 }

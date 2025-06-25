@@ -37,7 +37,6 @@ public class TeamMemberManager {
     }
 
     public List<TeamMember> findTeamMembersByTeamId(Long teamId) {
-        // N+1 문제 해결을 위한 fetch join 쿼리 호출
         return teamMemberRepository.findAllByTeamIdWithMember(teamId);
     }
 
@@ -63,7 +62,5 @@ public class TeamMemberManager {
     public void removeMember(Long teamId, Long memberId) {
         teamMemberRepository.deleteByTeamIdAndMemberId(teamId, memberId);
     }
-
-
 }
 

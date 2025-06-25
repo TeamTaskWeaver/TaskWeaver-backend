@@ -73,9 +73,6 @@ public class TeamService {
 
     public TeamResponse.TeamMemberListResponse getTeamMembers(Long teamId, Long currentUserId) {
 
-//        if (!teamMemberManager.isTeamMember(teamId, currentUserId)) {
-//            throw new BusinessExceptionHandler(ErrorCode.FORBIDDEN_ACCESS);
-//        }
         List<TeamMember> teamMembers = teamMemberManager.findTeamMembersByTeamId(teamId);
 
         List<TeamResponse.TeamMemberResponse> memberDtoList = teamMembers.stream()

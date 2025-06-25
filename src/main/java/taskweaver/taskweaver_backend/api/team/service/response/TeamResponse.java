@@ -59,7 +59,6 @@ public class TeamResponse {
     }
 
 
-    // 초대 정보 확인 응답 DTO
     @Builder
     @Getter
     @NoArgsConstructor
@@ -69,7 +68,6 @@ public class TeamResponse {
         private String name;
     }
 
-    // 초대 수락 성공 응답 DTO
     @Builder
     @Getter
     @NoArgsConstructor
