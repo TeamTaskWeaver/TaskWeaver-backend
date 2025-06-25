@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 public class NicknameUpdateRequest {
 
     @NotBlank(message = "닉네임은 필수 입력 값입니다.")
-    @Schema(description = "닉네임", example = "닉네임")
+    @Schema(description = "닉네임", example = "닉네임1")
     private String nickname;
 
 }

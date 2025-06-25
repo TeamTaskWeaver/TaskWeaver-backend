@@ -48,22 +48,16 @@ public class  MeetingRecordResponse {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class MeetingDetailsResponse {
-        @Schema(description = "회의록 ID")
         private Long meetingId;
 
-        @Schema(description = "회의록 전체 제목")
         private String title;
 
-        @Schema(description = "회의록 소제목")
         private String subTitle;
 
-        @Schema(description = "회의록 전체 내용")
         private String content;
 
-        @Schema(description = "생성 일시")
         private LocalDateTime createdAt;
 
-        @Schema(description = "아젠다 목록")
         private List<AgendaInfo> agendas;
     }
 

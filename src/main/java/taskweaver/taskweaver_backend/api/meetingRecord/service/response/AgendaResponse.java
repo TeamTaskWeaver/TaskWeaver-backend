@@ -12,9 +12,7 @@ public class AgendaResponse {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class CreateAgendaResponse {
-        @Schema(description = "생성된 아젠다의 ID", example = "10")
         private Long agendaId;
-        @Schema(description = "생성된 아젠다의 제목", example = "서버 아키텍처 v2 논의")
         private String title;
     }
 }

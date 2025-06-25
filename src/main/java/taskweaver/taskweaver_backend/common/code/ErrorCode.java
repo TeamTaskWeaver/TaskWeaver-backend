@@ -97,22 +97,17 @@ public enum ErrorCode {
 
     // TEAM
     TEAM_NOT_FOUND(404, "T001", "해당 팀을 찾을 수 없습니다."),
-    TEAM_INVITE_LINK_NOT_FOUND(404, "T002", "해당 초대 링크를 가진 팀을 찾을 수 없습니다."),
+    TEAM_INVITE_LINK_NOT_FOUND(404, "T002", "유효하지 않은 초대 링크입니다."),
     ALREADY_TEAM_MEMBER(409, "T003", "이미 해당 팀의 멤버입니다."),
-    CANNOT_APPOINT_SELF_AS_LEADER_AGAIN(400, "T004", "이미 팀장인 멤버입니다."),
+    CANNOT_APPOINT_SELF_AS_LEADER_AGAIN(400, "T004", "이미 팀장인 멤버에게 위임할 수 없습니다."),
     MEMBER_NOT_FOUND_IN_TEAM(404, "T005", "해당 멤버를 팀에서 찾을 수 없습니다."),
-    EMPTY_MEMBER_LIST(400, "T006", "내보낼 팀원 목록이 비어있습니다."),
-    CANNOT_DELETE_LEADER(400, "T005", "팀장은 내보낼 수 없습니다. 먼저 팀장을 위임해주세요."),
-
-    TEAM_MEMBER_STATE_NOT_FOUND(404, "T003", "No matching data in the team invitation status table."),
-    INVITATION_ALREADY_SENT(404, "T004", "The invitation has already been sent."),
-    NOT_TEAM_LEADER(404, "T005", " Not the leader of the team."),
-    CANNOT_DELETE_TEAM_LEADER(404, "T006", "Team leader cannot be deleted"),
-    CANNOT_INVITE_TEAM_LEADER(404, "T007", "Team leaders are not eligible for invitations."),
-    INVALID_INVITE_RESPONSE(404, "T008", "InviteState values must be 1 or 2."),
-    DUPLICATE_TEAM_MEMBER(404, "T009", "This is a team member that already exists."),
-    TEAM_MEMBER_CANNOT_UPDATE(404, "T010", "Only the leader can edit team information."),
-    TEAM_MEMBER_CANNOT_DELETE(404, "T011", "Only the leader can delete team information."),
+    EMPTY_MEMBER_LIST_TO_REMOVE(400, "T006", "내보낼 팀원 목록이 비어있습니다."),
+    CANNOT_REMOVE_LEADER(403, "T007", "팀장은 내보낼 수 없습니다. 먼저 팀장을 위임해주세요."),
+    NOT_TEAM_LEADER(403, "T008", "팀장 권한이 없습니다."),
+    INVITATION_ALREADY_SENT(409, "T009", "이미 초대 요청을 보낸 멤버입니다."),
+    INVALID_INVITE_RESPONSE(400, "T010", "초대 응답은 수락(1) 또는 거절(2)만 가능합니다."),
+    TEAM_MEMBER_STATE_NOT_FOUND(404, "T011", "해당 초대 상태 정보를 찾을 수 없습니다."),
+    CANNOT_INVITE_SELF(400, "T012", "자기 자신을 팀에 초대할 수 없습니다."),
 
     //TASK
     TASK_NOT_FOUND(404, "TS001", "Task Not Found"),
@@ -120,31 +115,32 @@ public enum ErrorCode {
     TASK_MEMBER_NOT_FOUND(404, "TS003", "Task Member Not Found"),
 
     // MEMBER
-    DUPLICATED_EMAIL(400, "M001", "Email is duplicated"),
-    MEMBER_NOT_FOUND(404, "M002", "Member Not Found"),
-    PASSWORD_NOT_MATCH(403, "M003", "Password doesn't match"),
-    SAME_PASSWORD(400, "M004", "New password cannot be the same as the current password."),
-    CANNOT_WITHDRAW_TEAM_LEADER(400, "M005", "You cannot withdraw because you are the team leader."),
-    CANNOT_WITHDRAW_PROJECT_LEADER(400, "M006", "You cannot withdraw because you are the project leader."),
-    PROFILE_IMAGE_UPLOAD_FAILED(400, "M007", "Profile Image upload failed"),
-    LOGIN_TYPE_NOT_FOUND(400, "M008", "Login Type Not Found"),
-    DUPLICATED_NICKNAME(400, "M009", "Nickname is duplicated."),
-    NOT_ALLOWED_PASSWORD(401, "M0010", "This password is not allowed."),
+    DUPLICATED_EMAIL(409, "M001", "이미 사용중인 이메일입니다."),
+    MEMBER_NOT_FOUND(404, "M002", "해당 회원을 찾을 수 없습니다."),
+    PASSWORD_NOT_MATCH(401, "M003", "비밀번호가 일치하지 않습니다."),
+    SAME_PASSWORD(400, "M004", "새 비밀번호는 현재 비밀번호와 같을 수 없습니다."),
+    CANNOT_WITHDRAW_TEAM_LEADER(403, "M005", "팀장 권한을 위임하기 전까지 탈퇴할 수 없습니다."),
+    CANNOT_WITHDRAW_PROJECT_LEADER(403, "M006", "프로젝트 리더 권한을 위임하기 전까지 탈퇴할 수 없습니다."),
+    PROFILE_IMAGE_UPLOAD_FAILED(500, "M007", "프로필 이미지 업로드에 실패했습니다."),
+    LOGIN_TYPE_NOT_FOUND(404, "M008", "존재하지 않는 로그인 타입입니다."),
+    DUPLICATED_NICKNAME(409, "M009", "이미 사용중인 닉네임입니다."),
+    INVALID_PASSWORD_POLICY(400, "M010", "비밀번호는 정책에 맞지 않습니다."),
 
 
+    // MEETING & AGENDA & RETROSPECTIVE (회의록 관련)
     MEETING_RECORD_NOT_FOUND(404, "MR001", "해당 회의록을 찾을 수 없습니다."),
     AGENDA_NOT_FOUND(404, "MR002", "해당 아젠다를 찾을 수 없습니다."),
-    RETROSPECTIVE_NOT_FOUND(404, "MR002", "해당 아젠다를 찾을 수 없습니다."),
-    // COMENT
-    COMMENT_NOT_FOUND(404, "C001", "Comment Not Found"),
-    COMMENT_DEPTH_EXCEED(404, "C002", "Comment Depth is Exceeded."),
-    NOT_COMMENT_WRITER(403, "C003", "Only comment writer can edit this comment."),
+    RETROSPECTIVE_NOT_FOUND(404, "MR003", "해당 회고록을 찾을 수 없습니다."),
 
-    EMAIL_ERROR(404, "E001", "An error occurred while sending the email."),
-    // 카카오 OAuth 파싱 에러 추가
-    KAKAO_TOKEN_PARSE_FAILED(400, "K001", "Failed to parse Kakao access token response"),
-    KAKAO_PROFILE_PARSE_FAILED(400, "K002", "Failed to parse Kakao profile response");
-    ;
+    // COMMENT
+    COMMENT_NOT_FOUND(404, "C001", "해당 댓글을 찾을 수 없습니다."),
+    COMMENT_DEPTH_EXCEEDED(400, "C002", "댓글은 1단계 깊이까지만 작성할 수 있습니다."),
+    NOT_COMMENT_WRITER(403, "C003", "댓글 작성자만 수정 및 삭제할 수 있습니다."),
+
+    // EXTERNAL & ETC (외부 연동 및 기타)
+    EMAIL_SEND_FAILED(500, "E001", "이메일 발송 중 오류가 발생했습니다."),
+    KAKAO_TOKEN_PARSE_FAILED(500, "K001", "카카오 토큰 정보를 받아오는데 실패했습니다."),
+    KAKAO_PROFILE_PARSE_FAILED(500, "K002", "카카오 프로필 정보를 받아오는데 실패했습니다.");
 
     /**
      * ******************************* Error Code Constructor ***************************************

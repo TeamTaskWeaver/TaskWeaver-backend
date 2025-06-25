@@ -11,6 +11,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AccessTokenResponse {
-    @Schema(description = "새로 발급된 엑세스 토큰", example = "newAccessToken")
+    @Schema(description = "새로 발급된 엑세스 토큰", example = "newAccessToken1")
     private String accessToken;
 }

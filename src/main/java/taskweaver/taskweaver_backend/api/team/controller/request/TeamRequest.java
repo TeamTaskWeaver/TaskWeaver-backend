@@ -12,19 +12,19 @@ import java.util.List;
 public class TeamRequest {
     @Getter
     public static class TeamCreateRequest {
-        @Schema(description = "팀 이름", example = "Team Name")
+        @Schema(description = "팀 이름", example = "팀 이름1")
         String name;
 
-        @Schema(description = "팀 소개", example = "Team Description")
+        @Schema(description = "팀 소개", example = "팀 소개1")
         String description;
     }
 
     @Getter
     public static class TeamUpdateRequest {
-        @Schema(description = "팀 이름", example = "Team Name")
+        @Schema(description = "팀 이름", example = "팀 이름1-수정")
         String name;
 
-        @Schema(description = "팀 소개", example = "Team Description")
+        @Schema(description = "팀 소개", example = "팀 소개1-수정")
         String description;
     }
 
@@ -39,5 +39,4 @@ public class TeamRequest {
     public static class DeleteMembersRequest {
         private List<Long> memberIds;
     }
-
 }

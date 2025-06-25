@@ -19,7 +19,6 @@ public class TeamConverter {
                 .build();
     }
 
-
     public static TeamResponse.TeamCreateResponse toCreateResponse(Team team) {
         return new TeamResponse.TeamCreateResponse(
                 team.getId(),
@@ -72,9 +71,6 @@ public class TeamConverter {
 
     public static String generateInviteLink() {
         UUID uuid = UUID.randomUUID();
-        // 도메인 결정 후
         return uuid.toString();
     }
-
-
 }

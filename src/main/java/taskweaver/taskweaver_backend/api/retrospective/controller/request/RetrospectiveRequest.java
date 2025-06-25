@@ -9,7 +9,7 @@ import lombok.Getter;
 public class RetrospectiveRequest {
     @Getter
     public static class RetrospectiveCreateRequest {
-        @Schema(description = "회고록 제목", example = "1주차 회고록")
+        @Schema(description = "회고록 제목", example = "회고록 제목1")
         String title;
     }
 }

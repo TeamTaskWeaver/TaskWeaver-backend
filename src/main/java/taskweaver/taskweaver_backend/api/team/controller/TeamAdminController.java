@@ -21,7 +21,7 @@ public class TeamAdminController {
     private final TeamAdminService teamAdminService;
 
     @PatchMapping("/leader")
-    @Operation(summary = "팀장 위임")
+    @Operation(summary = "팀장 위임", description = "팀장 변경하는 api입니다.")
     public ApiResponse<?> changeTeamLeader(
                                             @PathVariable Long teamId,
                                             @RequestBody @Valid TeamRequest.ChangeLeaderRequest request,
@@ -39,7 +39,7 @@ public class TeamAdminController {
     }
 
     @DeleteMapping("/members")
-    @Operation(summary = "팀원 내보내기")
+    @Operation(summary = "팀원 내보내기", description = "팀원 삭제하는 api입니다.")
     public ApiResponse<?> deleteTeamMembers(
             @PathVariable Long teamId,
             @RequestBody @Valid TeamRequest.DeleteMembersRequest request,

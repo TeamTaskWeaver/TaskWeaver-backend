@@ -47,7 +47,7 @@ import java.util.UUID;
 public class SignService {
     private final MemberRepository memberRepository;
     private final MemberRefreshTokenRepository memberRefreshTokenRepository;
-    private final MemberPlatformRepository memberPlatformRepository; // MemberPlatformRepository 주입 추가
+    private final MemberPlatformRepository memberPlatformRepository;
     private final PasswordEncoder encoder;
     private final TokenProvider tokenProvider;
     private final CookieUtil cookieUtil;
@@ -61,9 +61,8 @@ public class SignService {
 
     @Transactional
     public SignUpResponse registerMember(SignUpRequest request) {
-        // 임시 비밀번호 패턴 체크
         if (request.password().startsWith("TEMP-")) {
-            throw new BusinessExceptionHandler(ErrorCode.NOT_ALLOWED_PASSWORD);
+            throw new BusinessExceptionHandler(ErrorCode.INVALID_PASSWORD_POLICY);
         }
 
         try {
@@ -75,7 +74,6 @@ public class SignService {
         }
     }
 
-    // 로그인
     @Transactional
     public SignInResponse signIn(SignInRequest request) throws JsonProcessingException {
         Member member = memberRepository.findByEmail(request.email())
@@ -165,11 +163,9 @@ public class SignService {
                     .provider(ProviderType.KAKAO)
                     .providerId(providerId)
                     .build();
-            memberPlatformRepository.save(memberPlatform); // MemberPlatform 저장
+            memberPlatformRepository.save(memberPlatform);
 
         } else {
-            // 3. 기존 회원인 경우 (MemberPlatform이 존재하는 경우)
-            // MemberPlatform에서 연결된 Member를 가져옵니다.
             member = memberPlatform.getMember();
         }
 
@@ -187,8 +183,6 @@ public class SignService {
                         it -> it.updateRefreshToken(refreshToken),
                         () -> memberRefreshTokenRepository.save(new MemberRefreshToken(finalMember, refreshToken))
                 );
-
-
 
         return MemberConverter.toSignInResponse(finalMember, accessToken, refreshToken);
     }
@@ -217,7 +211,6 @@ public class SignService {
             throw new RuntimeException(e);
         }
 
-
         String rawJsonResponse = kakaoProfileResponse.getBody();
         System.out.println("--- Raw Kakao Profile JSON Response ---");
         System.out.println(rawJsonResponse);
@@ -232,38 +225,29 @@ public class SignService {
     }
 
     public AccessTokenResponse reissueAccessToken(String refreshToken, HttpServletResponse response) {
-        // 1. RefreshToken 검증
         if (refreshToken == null || !tokenProvider.isTokenValid(refreshToken)) {
             throw new BusinessExceptionHandler(ErrorCode.INVALID_REFRESH_TOKEN);
         }
 
-        // 2. DB에 저장된 RefreshToken과 일치하는지 확인
         MemberRefreshToken memberRefreshToken = memberRefreshTokenRepository.findByRefreshToken(refreshToken)
                 .orElseThrow(() -> new BusinessExceptionHandler(ErrorCode.REFRESH_TOKEN_NOT_FOUND));
 
-        // 3. 토큰에서 사용자 정보 추출
         Member member = memberRefreshToken.getMember();
 
-        // 4. 새로운 AccessToken 생성
         String newAccessToken = tokenProvider.createAccessToken(
                 String.format("%s:%s", member.getId(), member.getLoginType())
         );
 
-        // 5. (보안 강화) Refresh Token Rotation (RTR): 기존 RefreshToken은 무효화하고 새로운 RefreshToken 발급
         String newRefreshToken = tokenProvider.createRefreshToken();
-        memberRefreshToken.updateRefreshToken(newRefreshToken); // DB에 새 RefreshToken으로 업데이트
-        memberRefreshTokenRepository.save(memberRefreshToken); // 변경된 내용 저장
+        memberRefreshToken.updateRefreshToken(newRefreshToken);
+        memberRefreshTokenRepository.save(memberRefreshToken);
 
-        // 6. 새로 발급한 RefreshToken을 쿠키에 담아 응답
-        long refreshTokenMaxAgeSeconds = 7 * 24 * 60 * 60; // 예: 7일
+        long refreshTokenMaxAgeSeconds = 7 * 24 * 60 * 60;
         cookieUtil.createRefreshTokenCookie(response, newRefreshToken, refreshTokenMaxAgeSeconds);
 
-        // 7. 새로운 AccessToken을 DTO에 담아 반환
         return AccessTokenResponse.builder()
                 .accessToken(newAccessToken)
                 .build();
     }
-
-
 
 }

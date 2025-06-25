@@ -47,7 +47,6 @@ public class MeetingRecordConverter {
 
 
     public static MeetingRecordResponse.MeetingDetailsResponse toGetMeetingDetailsResponse(MeetingRecord meeting) {
-        // Agenda 엔티티 리스트를 AgendaInfo DTO 리스트로 변환
         List<MeetingRecordResponse.AgendaInfo> agendaInfos = meeting.getAgendas().stream()
                 .map(agenda -> MeetingRecordResponse.AgendaInfo.builder()
                         .agendaId(agenda.getId())
