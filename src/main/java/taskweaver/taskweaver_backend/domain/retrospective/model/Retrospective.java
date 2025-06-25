@@ -2,6 +2,7 @@ package taskweaver.taskweaver_backend.domain.retrospective.model;
 import jakarta.persistence.*;
 import lombok.*;
 import taskweaver.taskweaver_backend.domain.BaseEntity;
+import taskweaver.taskweaver_backend.domain.member.model.Member;
 import taskweaver.taskweaver_backend.domain.project.model.Project;
 
 @Entity
@@ -21,4 +22,9 @@ public class Retrospective extends BaseEntity {
 
     @Column(nullable = false, length = 200)
     private String title;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
+    private Member writer;
+
 }
