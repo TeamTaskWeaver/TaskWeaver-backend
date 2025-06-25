@@ -20,7 +20,7 @@ import taskweaver.taskweaver_backend.common.code.SuccessCode;
 public class TeamInviteController {
 
     private final TeamInviteService teamInviteService;
-    @Operation(summary = "초대 코드로 팀 정보 조회")
+    @Operation(summary = "초대 코드로 팀 정보 조회", description = "팀 생성시 랜덤하게 생성된 inviteCode로 팀을 검색하는 api입니다.")
     @GetMapping("/{inviteCode}")
     public ApiResponse<TeamResponse.TeamInviteInfoResponse> getTeamInfoByInviteCode(
             @PathVariable(name = "inviteCode") String inviteCode) {
@@ -31,9 +31,8 @@ public class TeamInviteController {
         );
     }
 
-    @Operation(summary = "팀 초대 수락")
-    @PostMapping("/{inviteCode}/accept")
-    //@ResponseStatus(HttpStatus.CREATED)
+    @Operation(summary = "팀 초대 수락", description = "팀 초대를 수락하는 api입니다. 팀 멤버로 자동 등록.")
+    @PostMapping(value = "/{inviteCode}/accept")
     public ApiResponse<TeamResponse.TeamJoinSuccessResponse> acceptInvitation(
             @PathVariable(name = "inviteCode") String inviteCode,
             @AuthenticationPrincipal User user) {

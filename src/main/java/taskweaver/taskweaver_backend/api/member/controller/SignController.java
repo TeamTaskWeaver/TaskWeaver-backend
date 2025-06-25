@@ -26,9 +26,8 @@ import taskweaver.taskweaver_backend.auth.CookieUtil;
 import taskweaver.taskweaver_backend.common.code.ApiResponse;
 import taskweaver.taskweaver_backend.common.code.SuccessCode;
 
-import java.io.IOException;
 
-@Tag(name = "회원 가입 및 로그인")
+@Tag(name = "회원 API")
 @RequiredArgsConstructor
 @RestController
 @RequestMapping
@@ -41,12 +40,9 @@ public class SignController {
     @Value("${jwt.refresh-expiration-days}")
     private long refreshTokenExpirationDays;
 
-    @Value("${app.frontend.redirect-uri}") // yml에 설정한 값 주입
-    private String frontendRedirectUri;
-
 
     private final CookieUtil cookieUtil;
-    @Operation(summary = "회원 가입")
+    @Operation(summary = "회원 가입", description = "회원 가입 api입니다.(테스트용)")
     @PostMapping(value = "/v1/auth/sign-up")
 
     public ResponseEntity<ApiResponse> signUp(@RequestBody SignUpRequest reqeust) {
@@ -58,21 +54,10 @@ public class SignController {
         return new ResponseEntity<>(ar, HttpStatus.OK);
     }
 
-//    @Operation(summary = "로그인")
-//    @PostMapping("/v1/auth/sign-in-test")
-//    public ResponseEntity<ApiResponse> signIn(@RequestBody SignInRequest request) throws JsonProcessingException {
-//        ApiResponse ar = ApiResponse.builder()
-//                .result(signService.signIn(request))
-//                .resultCode(SuccessCode.SELECT_SUCCESS.getStatus())
-//                .resultMsg(SuccessCode.SELECT_SUCCESS.getMessage())
-//                .build();
-//        return new ResponseEntity<>(ar, HttpStatus.OK);
-//    }
 
-    @Operation(summary = "로그인")
+    @Operation(summary = "로그인", description = "로그인 api입니다.(테스트용)")
     @PostMapping("/v1/auth/sign-in")
-    public ApiResponse<SignInResponse> signIn(
-                                               @RequestBody @Valid SignInRequest request,
+    public ApiResponse<SignInResponse> signIn(@RequestBody @Valid SignInRequest request,
                                                HttpServletResponse response) throws JsonProcessingException { // 2. IOException 제거 (필요 시)
 
         SignInResponse signInResponse = signService.signIn(request);
@@ -88,23 +73,9 @@ public class SignController {
     }
 
 
-//    @Operation(summary = "카카오 로그인")
-//    @GetMapping("/v1/auth/kakao-test")
-//    public ResponseEntity<ApiResponse> getLogin(@RequestParam("code") String code) {
-//        ApiResponse ar = ApiResponse.builder()
-//                .result(signService.getKakaoAccessToken(code))
-//                .resultCode(SuccessCode.SELECT_SUCCESS.getStatus())
-//                .resultMsg(SuccessCode.SELECT_SUCCESS.getMessage())
-//                .build();
-//        return new ResponseEntity<>(ar, HttpStatus.OK);
-//    }
-
-
-
-    @Operation(summary = "카카오 로그인")
+    @Operation(summary = "카카오 로그인", description = "카카오 로그인 후 code 입력시 토큰을 반환하는 api입니다.")
     @GetMapping("/v1/auth/kakao")
-    public ApiResponse<SignInResponse> kakaoLogin(
-                                                   @RequestParam("code") String code,
+    public ApiResponse<SignInResponse> kakaoLogin(@RequestParam("code") String code,
                                                    HttpServletResponse response) throws JsonProcessingException { // 2. IOException 제거 (필요 시)
 
 
@@ -120,8 +91,8 @@ public class SignController {
         return ApiResponse.onSuccess(SuccessCode.SELECT_SUCCESS, kakaoLoginResponse);
     }
 
-    @Operation(summary = "닉네임 업데이트")
-    @PatchMapping("/v1/auth/nickname")
+    @Operation(summary = "닉네임 업데이트", description = "카카오 회원가입 후 닉네임을 설정하는 api입니다.")
+    @PatchMapping("/v1/auth/nicknames")
     public ResponseEntity<ApiResponse> updateNickname(@RequestBody NicknameUpdateRequest request, @AuthenticationPrincipal User user) {
 
         Long memberId = Long.parseLong(user.getUsername());
@@ -138,9 +109,8 @@ public class SignController {
     @Operation(summary = "Access Token 재발급", description = "RefreshToken(쿠키)을 이용하여 새로운 AccessToken을 발급합니다.")
     @PostMapping("/v1/auth/refresh")
     public ApiResponse<AccessTokenResponse> reissueAccessToken(
-            @CookieValue(name = "refreshToken") String refreshToken, // 쿠키에서 RefreshToken 가져오기
+            @CookieValue(name = "refreshToken") String refreshToken,
             HttpServletResponse response) {
-
 
         AccessTokenResponse accessTokenResponse = signService.reissueAccessToken(refreshToken, response);
 

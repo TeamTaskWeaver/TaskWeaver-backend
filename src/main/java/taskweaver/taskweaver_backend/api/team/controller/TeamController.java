@@ -2,7 +2,6 @@ package taskweaver.taskweaver_backend.api.team.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -29,10 +28,8 @@ import java.util.List;
 public class TeamController {
 
     private final TeamService teamService;
-    private final TeamInviteService teamInviteService;
-    private final TeamAdminService teamAdminService;
 
-    @Operation(summary = "팀 생성")
+    @Operation(summary = "팀 생성", description = "팀을 생성하는 api입니다.")
     @PostMapping
     public ResponseEntity<ApiResponse<TeamResponse.TeamCreateResponse>> createTeam(@RequestBody TeamRequest.TeamCreateRequest request, @AuthenticationPrincipal User user) {
         TeamResponse.TeamCreateResponse data = teamService.createTeam(request, Long.parseLong(user.getUsername()));
@@ -41,7 +38,7 @@ public class TeamController {
                 .body(ApiResponse.onSuccess(SuccessCode.INSERT_SUCCESS, data));
     }
 
-    @Operation(summary =  "로그인한 유저의 팀 전체 조회")
+    @Operation(summary =  "로그인한 유저의 팀 전체 조회", description = "로그인한 멤버의 팀을 전체 조회하는 api입니다.")
     @GetMapping
     public ApiResponse<List<TeamResponse.TeamListResponse>> getMyTeams(
             @AuthenticationPrincipal User user) {
@@ -52,14 +49,14 @@ public class TeamController {
         );
     }
 
-    @Operation(summary = "팀 삭제")
+    @Operation(summary = "팀 삭제", description = "팀을 삭제하는 api입니다.")
     @DeleteMapping("/{teamId}")
     public ApiResponse<?> deleteTeam(@PathVariable(name = "teamId") Long teamId, @AuthenticationPrincipal User user) {
         teamService.deleteTeam(teamId, Long.parseLong(user.getUsername()));
         return ApiResponse.onSuccess(SuccessCode.DELETE_SUCCESS);
     }
 
-    @Operation(summary = "팀 수정")
+    @Operation(summary = "팀 수정", description = "팀 정보를 수정할 수 있는 api입니다.")
     @PatchMapping("/{teamId}")
     public ApiResponse<TeamResponse.TeamUpdateResponse> updateTeam(@PathVariable(name = "teamId") Long teamId, @RequestBody TeamRequest.TeamUpdateRequest request, @AuthenticationPrincipal User user) {
         TeamResponse.TeamUpdateResponse responseDto = teamService.updateTeam(
@@ -72,7 +69,7 @@ public class TeamController {
     }
 
 
-    @Operation(summary = "팀 멤버 전체 조회")
+    @Operation(summary = "팀 멤버 전체 조회", description = "해당 팀에 소속된 멤버를 전체 조회합니다.")
     @GetMapping("/{teamId}/members")
     public ApiResponse<TeamResponse.TeamMemberListResponse> getTeamMembers(
             @PathVariable(name = "teamId") Long teamId,

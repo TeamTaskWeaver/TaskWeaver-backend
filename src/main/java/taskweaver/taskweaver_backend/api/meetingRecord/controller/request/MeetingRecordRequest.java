@@ -9,22 +9,22 @@ import lombok.Getter;
 public class MeetingRecordRequest {
     @Getter
     public static class MeetingCreateRequest {
-        @Schema(description = "회의록 제목", example = "Meeting Name")
+        @Schema(description = "회의록 제목", example = "회의록1")
         String title;
     }
 
     @Getter
     public static class MeetingUpdateTitleRequest {
-        @Schema(description = "회의록 제목", example = "Meeting Name")
+        @Schema(description = "회의록 제목", example = "회의록-수정1")
         String title;
     }
 
     @Getter
     public static class MeetingUpdateContentRequest {
-        @Schema(description = "회의록 내용의 제목", example = "Meeting Name")
+        @Schema(description = "회의록 내용의 제목", example = "회의록 소제목1")
         String subTitle;
 
-        @Schema(description = "회의록 내용", example = "Meeting Content")
+        @Schema(description = "회의록 내용", example = "회의록 내용1")
         String content;
     }
 }

@@ -10,7 +10,6 @@ import java.util.Optional;
 
 @Repository
 public interface MemberPlatformRepository extends JpaRepository<MemberPlatform, Long> {
-    //
     Optional<MemberPlatform> findByProviderAndProviderId(ProviderType provider, String providerId);
 
 }

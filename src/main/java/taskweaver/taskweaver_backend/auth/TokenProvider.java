@@ -49,7 +49,7 @@ public class TokenProvider {
                 .getSubject();
     }
 
-    // 리프레시 토큰은 사용자와 관련된 정보를 전혀 담지 않을 것이기 때문에 subject는 따로 설정하지 않고 발급자와 발급시간, 만료시간만 설정한다.
+
     public String createRefreshToken() {
         return Jwts.builder()
                 .signWith(new SecretKeySpec(jwtProperties.getSecretKey().getBytes(), SignatureAlgorithm.HS512.getJcaName()))

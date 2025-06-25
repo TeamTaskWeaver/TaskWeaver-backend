@@ -63,7 +63,7 @@ public class SignService {
     public SignUpResponse registerMember(SignUpRequest request) {
         // 임시 비밀번호 패턴 체크
         if (request.password().startsWith("TEMP-")) {
-            throw new BusinessExceptionHandler(ErrorCode.NOT_ALLOWED_PASSWORD);
+            throw new BusinessExceptionHandler(ErrorCode.INVALID_PASSWORD_POLICY);
         }
 
         try {
