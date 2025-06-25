@@ -61,10 +61,10 @@ public class TeamAdminService {
 
         // 2. 기본 유효성 검증 (기존과 동일)
         if (memberIds == null || memberIds.isEmpty()) {
-            throw new BusinessExceptionHandler(ErrorCode.EMPTY_MEMBER_LIST);
+            throw new BusinessExceptionHandler(ErrorCode.EMPTY_MEMBER_LIST_TO_REMOVE);
         }
         if (memberIds.contains(currentUserId)) {
-            throw new BusinessExceptionHandler(ErrorCode.CANNOT_DELETE_LEADER);
+            throw new BusinessExceptionHandler(ErrorCode.CANNOT_REMOVE_LEADER);
         }
 
         // 3. 삭제 대상 TeamMember 엔티티들 조회 (기존과 동일)
