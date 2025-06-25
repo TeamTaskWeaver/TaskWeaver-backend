@@ -11,7 +11,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import taskweaver.taskweaver_backend.auth.CustomAuthenticationEntryPoint;
 import taskweaver.taskweaver_backend.auth.JwtAuthenticationFilter;
 
@@ -42,6 +41,11 @@ public class SecurityConfig {
                         requests.requestMatchers(allowedUrls).permitAll()
                                 .anyRequest().authenticated()
                 )
+                // 예외 핸들러 추가
+                .exceptionHandling(exceptions -> exceptions
+                        .authenticationEntryPoint(new CustomAuthenticationEntryPoint())
+                )
+
 
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
