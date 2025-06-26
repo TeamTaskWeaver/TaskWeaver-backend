@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.*;
 import taskweaver.taskweaver_backend.api.retrospective.controller.request.RetrospectiveCommentRequest;
 import taskweaver.taskweaver_backend.api.retrospective.service.RetrospectiveCommentService;
 import taskweaver.taskweaver_backend.api.retrospective.service.response.RetrospectiveCommentResponse;
+import taskweaver.taskweaver_backend.common.code.ApiResponse;
+import taskweaver.taskweaver_backend.common.code.SuccessCode;
 
 @Tag(name = "회고록 내용(댓글) API")
 @RestController
@@ -35,7 +37,7 @@ public class RetrospectiveCommentController {
     }
 
     @Operation(summary = "회고록 내용(댓글) 수정", description = "회고록에 내용(댓글)을 수정하는 api입니다.")
-    @PatchMapping("/retrospectives/{retrospectiveId}/comments")
+    @PatchMapping("/comments/{commentId}")
     public ResponseEntity<RetrospectiveCommentResponse.UpdateCommentResponse> updateRetrospectiveComment(
             @PathVariable Long commentId,
             @RequestBody RetrospectiveCommentRequest.UpdateCommentRequest request,
@@ -47,5 +49,16 @@ public class RetrospectiveCommentController {
                 Long.parseLong(user.getUsername())
         );
         return ResponseEntity.ok(response);
+    }
+
+    @Operation(summary = "회고록 내용(댓글) 삭제", description = "회고록에 내용(댓글)을 삭제하는 api입니다.")
+    @DeleteMapping("/comments/{commentId}")
+    public ApiResponse<?> deleteRetrospectiveComment(
+            @PathVariable Long commentId,
+            @AuthenticationPrincipal User user
+    ) {
+        retrospectiveCommentService.deleteRetrospectiveComment(commentId, Long.parseLong(user.getUsername()));
+
+        return ApiResponse.onSuccess(SuccessCode.DELETE_SUCCESS);
     }
 }

@@ -64,4 +64,28 @@ public class RetrospectiveCommentService {
 
         return RetrospectiveCommentConverter.toUpdateRetrospectiveCommentResponse(comment);
     }
+
+    @Transactional
+    public void deleteRetrospectiveComment(Long commentId, Long currentMemberId) {
+        RetrospectiveComment comment = retrospectiveCommentRepository.findById(commentId)
+                .orElseThrow(() -> new BusinessExceptionHandler(ErrorCode.COMMENT_NOT_FOUND));
+
+        if (!comment.getMember().getId().equals(currentMemberId)) {
+            throw new BusinessExceptionHandler(ErrorCode.NOT_COMMENT_WRITER);
+        }
+
+        // 대댓글 있으면 soft delete
+        // 대댓글 없으면 hard delete
+        // 3. 대댓글 유무에 따라 분기 처리
+        if (!comment.getChildren().isEmpty()) {
+            comment.deleteSoftly();
+        } else {
+            RetrospectiveComment parent = comment.getParent();
+            retrospectiveCommentRepository.delete(comment);
+
+            if (parent != null && parent.isSoftDeleted() && parent.getChildren().size() == 1) {
+                retrospectiveCommentRepository.delete(parent);
+            }
+        }
+    }
 }
