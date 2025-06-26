@@ -86,6 +86,7 @@ public class TeamService {
 
         return TeamResponse.TeamMemberListResponse.builder()
                 .totalCount(memberDtoList.size())
+                .teamId(teamId)
                 .members(memberDtoList)
                 .build();
     }

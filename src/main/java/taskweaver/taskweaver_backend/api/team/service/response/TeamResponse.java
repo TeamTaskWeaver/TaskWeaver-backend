@@ -18,7 +18,7 @@ public class TeamResponse {
         Long id;
         String name;
         String description;
-        String inviteLink;
+        String inviteCode;
         Long teamLeaderId;
         LocalDateTime createdAt;
     }
@@ -53,7 +53,7 @@ public class TeamResponse {
         Long id;
         String name;
         String description;
-        String inviteLink;
+        String inviteCode;
         Long teamLeader;
         LocalDateTime updateAt;
     }
@@ -95,6 +95,7 @@ public class TeamResponse {
     @AllArgsConstructor
     public static class TeamMemberListResponse {
         private int totalCount;
+        private Long teamId;
         private List<TeamMemberResponse> members;
     }
 }
