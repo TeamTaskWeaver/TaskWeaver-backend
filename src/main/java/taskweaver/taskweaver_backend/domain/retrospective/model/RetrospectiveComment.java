@@ -40,5 +40,9 @@ public class RetrospectiveComment extends BaseEntity {
     private String content;
 
     private int depth;
+
+    public void updateContent(String content) {
+        this.content = content;
+    }
 }
 

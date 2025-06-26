@@ -16,7 +16,6 @@ import taskweaver.taskweaver_backend.domain.retrospective.model.Retrospective;
 import taskweaver.taskweaver_backend.domain.retrospective.model.RetrospectiveComment;
 import taskweaver.taskweaver_backend.domain.retrospective.repository.RetrospectiveCommentRepository;
 import taskweaver.taskweaver_backend.domain.retrospective.repository.RetrospectiveRepository;
-
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -41,13 +40,28 @@ public class RetrospectiveCommentService {
         if (request.getParentId() != null) {
             parentComment = retrospectiveCommentRepository.findById(request.getParentId())
                     .orElseThrow(() -> new BusinessExceptionHandler(ErrorCode.COMMENT_NOT_FOUND));
-
         }
 
         RetrospectiveComment newComment = RetrospectiveCommentConverter.toRetrospectiveComment(request, retrospective, writer, parentComment);
         retrospectiveCommentRepository.save(newComment);
 
-
         return RetrospectiveCommentConverter.toRetrospectiveCommentResponse(newComment);
+    }
+
+
+    @Transactional
+    public RetrospectiveCommentResponse.UpdateCommentResponse updateRetrospectiveComment(Long commentId,
+                                                                                         RetrospectiveCommentRequest.UpdateCommentRequest request,
+                                                                             Long currentMemberId) {
+        RetrospectiveComment comment = retrospectiveCommentRepository.findById(commentId)
+                .orElseThrow(() -> new BusinessExceptionHandler(ErrorCode.COMMENT_NOT_FOUND));
+
+        if (!comment.getMember().getId().equals(currentMemberId)) {
+            throw new BusinessExceptionHandler(ErrorCode.NOT_COMMENT_WRITER);
+        }
+
+        comment.updateContent(request.getContent());
+
+        return RetrospectiveCommentConverter.toUpdateRetrospectiveCommentResponse(comment);
     }
 }

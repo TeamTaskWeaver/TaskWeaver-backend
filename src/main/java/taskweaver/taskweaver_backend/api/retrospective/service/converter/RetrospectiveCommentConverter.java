@@ -31,4 +31,13 @@ public class RetrospectiveCommentConverter {
                 .createdAt(comment.getCreatedAt())
                 .build();
     }
+
+    public static RetrospectiveCommentResponse.UpdateCommentResponse toUpdateRetrospectiveCommentResponse(RetrospectiveComment comment) {
+        return RetrospectiveCommentResponse.UpdateCommentResponse.builder()
+                .commentId(comment.getId())
+                .content(comment.getContent())
+                .writer(comment.getMember().getNickname())
+                .modifiedAt(comment.getModifiedAt())
+                .build();
+    }
 }

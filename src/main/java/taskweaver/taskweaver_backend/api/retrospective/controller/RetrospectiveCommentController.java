@@ -19,7 +19,7 @@ public class RetrospectiveCommentController {
 
     private final RetrospectiveCommentService retrospectiveCommentService;
 
-    @Operation(summary = "회고록 내용(댓글) 생성", description = "회고록에 내용(댓글)을 생성하는 api입니다.ㅣ")
+    @Operation(summary = "회고록 내용(댓글) 생성", description = "회고록에 내용(댓글)을 생성하는 api입니다.")
     @PostMapping("/retrospectives/{retrospectiveId}/comments")
     public ResponseEntity<RetrospectiveCommentResponse.CreateCommentResponse> createRetrospectiveComment(
             @PathVariable Long retrospectiveId,
@@ -32,5 +32,20 @@ public class RetrospectiveCommentController {
                 Long.parseLong(user.getUsername())
         );
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @Operation(summary = "회고록 내용(댓글) 수정", description = "회고록에 내용(댓글)을 수정하는 api입니다.")
+    @PatchMapping("/retrospectives/{retrospectiveId}/comments")
+    public ResponseEntity<RetrospectiveCommentResponse.UpdateCommentResponse> updateRetrospectiveComment(
+            @PathVariable Long commentId,
+            @RequestBody RetrospectiveCommentRequest.UpdateCommentRequest request,
+            @AuthenticationPrincipal User user
+    ) {
+        RetrospectiveCommentResponse.UpdateCommentResponse response = retrospectiveCommentService.updateRetrospectiveComment(
+                commentId,
+                request,
+                Long.parseLong(user.getUsername())
+        );
+        return ResponseEntity.ok(response);
     }
 }

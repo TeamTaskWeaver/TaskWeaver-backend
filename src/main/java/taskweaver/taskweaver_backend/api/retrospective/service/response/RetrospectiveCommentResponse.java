@@ -19,6 +19,16 @@ public class RetrospectiveCommentResponse {
         private Long writerId;
         private Long parentId;
         private LocalDateTime createdAt;
+    }
 
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class UpdateCommentResponse {
+        private Long commentId;
+        private String content;
+        private String writer;
+        private LocalDateTime modifiedAt;
     }
 }

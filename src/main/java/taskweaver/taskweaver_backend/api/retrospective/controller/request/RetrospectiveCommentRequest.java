@@ -15,4 +15,10 @@ public class RetrospectiveCommentRequest {
         private Long parentId;
 
     }
+
+    @Getter
+    @NoArgsConstructor
+    public static class UpdateCommentRequest {
+        private String content;
+    }
 }
