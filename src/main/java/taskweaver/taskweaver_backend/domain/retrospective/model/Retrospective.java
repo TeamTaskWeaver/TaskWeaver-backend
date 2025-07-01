@@ -5,6 +5,9 @@ import taskweaver.taskweaver_backend.domain.BaseEntity;
 import taskweaver.taskweaver_backend.domain.member.model.Member;
 import taskweaver.taskweaver_backend.domain.project.model.Project;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Getter
 @Builder
@@ -26,5 +29,8 @@ public class Retrospective extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member writer;
+
+    @OneToMany(mappedBy = "retrospective", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<RetrospectiveComment> comments = new ArrayList<>();
 
 }

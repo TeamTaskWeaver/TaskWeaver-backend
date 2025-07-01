@@ -13,7 +13,14 @@ import taskweaver.taskweaver_backend.domain.member.repository.MemberRepository;
 import taskweaver.taskweaver_backend.domain.project.model.Project;
 import taskweaver.taskweaver_backend.domain.project.repository.ProjectRepository;
 import taskweaver.taskweaver_backend.domain.retrospective.model.Retrospective;
+import taskweaver.taskweaver_backend.domain.retrospective.model.RetrospectiveComment;
+import taskweaver.taskweaver_backend.domain.retrospective.model.RetrospectiveReview;
+import taskweaver.taskweaver_backend.domain.retrospective.model.RetrospectiveReviewType;
+import taskweaver.taskweaver_backend.domain.retrospective.repository.RetrospectiveCommentRepository;
 import taskweaver.taskweaver_backend.domain.retrospective.repository.RetrospectiveRepository;
+import taskweaver.taskweaver_backend.domain.retrospective.repository.RetrospectiveReviewRepository;
+
+import java.util.List;
 
 
 @Service
@@ -24,6 +31,8 @@ public class RetrospectiveService {
     private final MemberRepository memberRepository;
     private final ProjectRepository projectRepository;
     private final RetrospectiveRepository retrospectiveRepository;
+    private final RetrospectiveReviewRepository reviewRepository;
+    private final RetrospectiveCommentRepository commentRepository;
     @Transactional
     public RetrospectiveResponse.RetrospectiveCreateResponse createRetrospective(
             Long projectId, RetrospectiveRequest.RetrospectiveCreateRequest request, long writer) {
@@ -48,4 +57,27 @@ public class RetrospectiveService {
         retrospective.deleteSoftly();
     }
 
+
+    public RetrospectiveResponse.RetrospectiveDetailResponse getRetrospectiveDetails(Long retrospectiveId, Long currentMemberId) {
+        Retrospective retrospective = retrospectiveRepository.findRetrospectiveWriterById(retrospectiveId)
+                .orElseThrow(() -> new BusinessExceptionHandler(ErrorCode.RETROSPECTIVE_NOT_FOUND));
+
+        long likeCount = reviewRepository.countByRetrospectiveAndReviewType(retrospective, RetrospectiveReviewType.LIKE);
+        long dislikeCount = reviewRepository.countByRetrospectiveAndReviewType(retrospective, RetrospectiveReviewType.DISLIKE);
+
+        RetrospectiveReviewType myReviewType = reviewRepository
+                .findByRetrospectiveAndMember(retrospective, Member.builder().id(currentMemberId).build())
+                .map(RetrospectiveReview::getReviewType)
+                .orElse(null);
+
+        RetrospectiveResponse.ReviewInfo reviewInfo = RetrospectiveResponse.ReviewInfo.builder()
+                .likeCount(likeCount)
+                .dislikeCount(dislikeCount)
+                .myReviewType(myReviewType)
+                .build();
+
+        List<RetrospectiveComment> comments = commentRepository.findByRetrospectiveOrderByCreatedAtAsc(retrospective);
+
+        return RetrospectiveConverter.toRetrospectiveDetailResponse(retrospective, reviewInfo, comments);
+    }
 }

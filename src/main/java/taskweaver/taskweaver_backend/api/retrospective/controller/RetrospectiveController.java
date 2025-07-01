@@ -46,4 +46,19 @@ public class RetrospectiveController {
         return ApiResponse.onSuccess(SuccessCode.DELETE_SUCCESS);
     }
 
+
+    @Operation(summary = "회고록 조회", description = "회고록 기본 정보, 내용, 리뷰 조회")
+    @GetMapping("/retrospectives/{retroId}")
+    public ResponseEntity<RetrospectiveResponse.RetrospectiveDetailResponse> getRetrospectiveDetails(
+            @PathVariable Long retroId,
+            @AuthenticationPrincipal User user)
+    {
+
+        RetrospectiveResponse.RetrospectiveDetailResponse response = retrospectiveService.getRetrospectiveDetails(
+                retroId,
+                Long.parseLong(user.getUsername())
+        );
+        return ResponseEntity.ok(response);
+    }
+
 }
