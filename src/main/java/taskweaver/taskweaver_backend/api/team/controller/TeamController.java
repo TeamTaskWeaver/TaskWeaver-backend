@@ -10,8 +10,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
 import taskweaver.taskweaver_backend.api.team.controller.request.TeamRequest;
-import taskweaver.taskweaver_backend.api.team.service.TeamAdminService;
-import taskweaver.taskweaver_backend.api.team.service.TeamInviteService;
 import taskweaver.taskweaver_backend.api.team.service.TeamService;
 import taskweaver.taskweaver_backend.api.team.service.response.TeamResponse;
 import taskweaver.taskweaver_backend.common.code.ApiResponse;
