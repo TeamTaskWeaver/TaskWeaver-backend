@@ -3,6 +3,8 @@ package taskweaver.taskweaver_backend.api.member.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import taskweaver.taskweaver_backend.api.member.service.converter.MemberConverter;
+import taskweaver.taskweaver_backend.api.member.service.response.MemberResponse;
 import taskweaver.taskweaver_backend.common.code.ErrorCode;
 import taskweaver.taskweaver_backend.common.exception.handler.BusinessExceptionHandler;
 import taskweaver.taskweaver_backend.domain.member.model.Member;
@@ -25,6 +27,13 @@ public class MemberService {
 
         member.updateNickname(newNickname);
         return member;
+    }
+
+    public MemberResponse.ProfileResponse getMyProfile(Long memberId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new BusinessExceptionHandler(ErrorCode.MEMBER_NOT_FOUND));
+
+        return MemberConverter.toProfileResponse(member);
     }
 
 }

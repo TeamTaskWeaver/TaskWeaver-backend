@@ -3,6 +3,7 @@ package taskweaver.taskweaver_backend.api.member.service.converter;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import taskweaver.taskweaver_backend.api.member.controller.request.SignUpRequest;
 import taskweaver.taskweaver_backend.api.member.service.response.CreateAccessTokenResponse;
+import taskweaver.taskweaver_backend.api.member.service.response.MemberResponse;
 import taskweaver.taskweaver_backend.api.member.service.response.SignInResponse;
 import taskweaver.taskweaver_backend.api.member.service.response.SignUpResponse;
 import taskweaver.taskweaver_backend.domain.member.model.LoginType;
@@ -47,5 +48,13 @@ public class MemberConverter {
 
     public static CreateAccessTokenResponse toCreateAccessTokenResponse(String newAccessToken) {
         return new CreateAccessTokenResponse(newAccessToken);
+    }
+
+    public static MemberResponse.ProfileResponse toProfileResponse(Member member) {
+        return MemberResponse.ProfileResponse.builder()
+                .id(member.getId())
+                .email(member.getEmail())
+                .nickname(member.getNickname())
+                .build();
     }
 }

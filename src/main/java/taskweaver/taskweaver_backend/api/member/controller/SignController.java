@@ -21,6 +21,7 @@ import taskweaver.taskweaver_backend.api.member.controller.request.SignUpRequest
 
 import taskweaver.taskweaver_backend.api.member.service.MemberService;
 import taskweaver.taskweaver_backend.api.member.service.SignService;
+import taskweaver.taskweaver_backend.api.member.service.response.MemberResponse;
 import taskweaver.taskweaver_backend.api.member.service.response.SignInResponse;
 import taskweaver.taskweaver_backend.auth.CookieUtil;
 import taskweaver.taskweaver_backend.common.code.ApiResponse;
@@ -117,4 +118,16 @@ public class SignController {
         return ApiResponse.onSuccess(SuccessCode.TOKEN_REISSUED, accessTokenResponse);
     }
 
+    @GetMapping("/v1/users/profile")
+    @Operation(summary = "회원 정보 조회", description = "토큰으로 회원 기본정보를 조회하는 api입니다.")
+    public ApiResponse<MemberResponse.ProfileResponse> getMyProfile(
+            @AuthenticationPrincipal User user) {
+
+        MemberResponse.ProfileResponse response = memberService.getMyProfile(Long.parseLong(user.getUsername()));
+
+        return ApiResponse.onSuccess(
+                SuccessCode.SELECT_SUCCESS,
+                response
+        );
+    }
 }
